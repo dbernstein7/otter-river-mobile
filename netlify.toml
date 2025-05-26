@@ -1,0 +1,13 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+[[redirects]]
+  from = "/game/*"
+  to = "/game/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/game"
+  to = "/game/index.html"
+  status = 200 
