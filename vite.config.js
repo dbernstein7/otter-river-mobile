@@ -9,14 +9,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    sourcemap: true,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          three: ['three']
-        }
-      }
-    }
+    sourcemap: true
   },
   resolve: {
     alias: {
