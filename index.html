@@ -38,12 +38,6 @@
     <div id="loading">Loading game...</div>
     <div id="score">Fish: 0</div>
     
-    <script type="module">
-        console.log('Inline script started');
-        import('./src/main.js').catch(error => {
-            console.error('Error loading main.js:', error);
-            document.getElementById('loading').textContent = 'Error loading game. Please refresh.';
-        });
-    </script>
+    <script type="module" src="./src/main.js"></script>
 </body>
 </html> 
