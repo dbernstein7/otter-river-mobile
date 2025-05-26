@@ -21,27 +21,112 @@ try {
             const scene = new THREE.Scene();
             console.log('Scene created');
             
-            scene.background = new THREE.Color(0x87CEEB);
+            scene.background = new THREE.Color(0x87CEEB); // Sky blue background
+
+            // Camera setup
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 5, 10);
+            camera.lookAt(0, 0, 0);
+
+            // Renderer setup
             const renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
             document.body.appendChild(renderer.domElement);
             console.log('Renderer setup complete');
 
-            // Add a simple cube for testing
-            const geometry = new THREE.BoxGeometry();
-            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-            const cube = new THREE.Mesh(geometry, material);
-            scene.add(cube);
-            console.log('Cube added to scene');
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
 
-            camera.position.z = 5;
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 5, 5);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+
+            // River (ground)
+            const riverGeometry = new THREE.PlaneGeometry(20, 100);
+            const riverMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x4169E1,
+                roughness: 0.1,
+                metalness: 0.2
+            });
+            const river = new THREE.Mesh(riverGeometry, riverMaterial);
+            river.rotation.x = -Math.PI / 2;
+            river.position.z = -20;
+            river.receiveShadow = true;
+            scene.add(river);
+
+            // Otter (player)
+            const otterGeometry = new THREE.BoxGeometry(1, 0.5, 2);
+            const otterMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
+            const otter = new THREE.Mesh(otterGeometry, otterMaterial);
+            otter.position.y = 0.5;
+            otter.castShadow = true;
+            scene.add(otter);
+
+            // Fish (collectibles)
+            const fishes = [];
+            const fishGeometry = new THREE.ConeGeometry(0.3, 1, 4);
+            const fishMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700 });
+
+            function createFish() {
+                const fish = new THREE.Mesh(fishGeometry, fishMaterial);
+                fish.position.set(
+                    (Math.random() - 0.5) * 15,
+                    0.5,
+                    -50 - Math.random() * 50
+                );
+                fish.rotation.y = Math.PI / 2;
+                fish.castShadow = true;
+                scene.add(fish);
+                fishes.push(fish);
+            }
+
+            // Create initial fish
+            for (let i = 0; i < 10; i++) {
+                createFish();
+            }
+
+            // Game controls
+            const keys = {};
+            document.addEventListener('keydown', (e) => keys[e.key] = true);
+            document.addEventListener('keyup', (e) => keys[e.key] = false);
 
             // Animation loop
             function animate() {
                 requestAnimationFrame(animate);
-                cube.rotation.x += 0.01;
-                cube.rotation.y += 0.01;
+
+                // Move otter
+                if (keys['ArrowLeft'] && otter.position.x > -8) {
+                    otter.position.x -= 0.2;
+                }
+                if (keys['ArrowRight'] && otter.position.x < 8) {
+                    otter.position.x += 0.2;
+                }
+
+                // Move fish
+                fishes.forEach((fish, index) => {
+                    fish.position.z += 0.2;
+                    
+                    // Check collision
+                    if (Math.abs(fish.position.x - otter.position.x) < 1 &&
+                        Math.abs(fish.position.z - otter.position.z) < 1) {
+                        scene.remove(fish);
+                        fishes.splice(index, 1);
+                        gameState.score += 1;
+                        scoreElement.textContent = `Fish: ${gameState.score}`;
+                        createFish();
+                    }
+
+                    // Remove fish that pass the camera
+                    if (fish.position.z > 5) {
+                        scene.remove(fish);
+                        fishes.splice(index, 1);
+                        createFish();
+                    }
+                });
+
                 renderer.render(scene, camera);
             }
 
