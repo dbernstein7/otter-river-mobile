@@ -1162,16 +1162,47 @@ function showLevelUpMessage() {
 function updateUnlockables() {
     const unlocked = localStorage.getItem('topHatUnlocked') === 'true';
     const status = document.getElementById('top-hat-status');
+    const toggle = document.getElementById('top-hat-toggle');
     if (status) {
         if (unlocked) {
             status.textContent = 'Unlocked!';
             status.style.color = '#4CAF50';
+            toggle.disabled = false;
         } else {
             status.textContent = 'Locked (Score 100+ in a game)';
             status.style.color = '#ff00ff';
+            toggle.disabled = true;
         }
     }
 }
+
+// Add event listener for top hat toggle
+document.getElementById('top-hat-toggle').addEventListener('change', function() {
+    if (this.checked) {
+        // Add top hat to otter
+        const hatGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.5, 16);
+        const hatMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
+        const hat = new THREE.Mesh(hatGeometry, hatMaterial);
+        hat.position.set(0, 0.8, 0.8);
+        hat.castShadow = true;
+        hat.userData = { type: 'hat' };
+        otter.add(hat);
+
+        // Add brim
+        const brimGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 16);
+        const brimMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
+        const brim = new THREE.Mesh(brimGeometry, brimMaterial);
+        brim.position.set(0, 0.6, 0.8);
+        brim.castShadow = true;
+        otter.add(brim);
+    } else {
+        // Remove top hat from otter
+        const hat = otter.children.find(child => child.userData && child.userData.type === 'hat');
+        if (hat) {
+            otter.remove(hat);
+        }
+    }
+});
 
 function returnToMenu() {
     document.getElementById('game-over').style.display = 'none';
