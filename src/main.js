@@ -1192,5 +1192,8 @@ function returnToMenu() {
     fish.forEach(fish => scene.remove(fish));
     obstacles = [];
     fish = [];
+    // Reset otter position
+    otter.position.set(0, 0.25, 0);
+    otter.rotation.y = Math.PI;
     return false;
 } 
