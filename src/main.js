@@ -414,12 +414,12 @@ function createOtter() {
         otter.add(brim);
     }
 
-    // Add crown with triangles upright
+    // Add crown with torus lowered to touch otter's head
     const crownGroup = new THREE.Group();
     const bandGeometry = new THREE.TorusGeometry(0.32, 0.07, 8, 24);
     const bandMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
     const band = new THREE.Mesh(bandGeometry, bandMaterial);
-    band.position.set(0, 0.95, 0.8);
+    band.position.set(0, 0.75, 0.8); // Lowered position to touch otter's head
     band.rotation.x = Math.PI / 2;
     band.userData = { type: 'crown-band' };
     crownGroup.add(band);
@@ -430,7 +430,7 @@ function createOtter() {
         const triangleMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
         const triangle = new THREE.Mesh(triangleGeometry, triangleMaterial);
         const angle = (i / 3) * Math.PI * 2;
-        triangle.position.set(Math.cos(angle) * 0.23, 1.08, 0.8 + Math.sin(angle) * 0.23);
+        triangle.position.set(Math.cos(angle) * 0.23, 0.88, 0.8 + Math.sin(angle) * 0.23); // Adjusted position
         triangle.rotation.x = 0; // Upright triangles
         triangle.userData = { type: 'crown-triangle' };
         crownGroup.add(triangle);
@@ -1265,12 +1265,12 @@ if (document.getElementById('crown-toggle')) {
         const brim = otter.children.find(child => child.userData && child.userData.type === 'brim');
         if (brim) otter.remove(brim);
         if (this.checked) {
-            // Add crown with triangles upright
+            // Add crown with torus lowered to touch otter's head
             const crownGroup = new THREE.Group();
             const bandGeometry = new THREE.TorusGeometry(0.32, 0.07, 8, 24);
             const bandMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
             const band = new THREE.Mesh(bandGeometry, bandMaterial);
-            band.position.set(0, 0.95, 0.8);
+            band.position.set(0, 0.75, 0.8); // Lowered position to touch otter's head
             band.rotation.x = Math.PI / 2;
             band.userData = { type: 'crown-band' };
             crownGroup.add(band);
@@ -1281,7 +1281,7 @@ if (document.getElementById('crown-toggle')) {
                 const triangleMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
                 const triangle = new THREE.Mesh(triangleGeometry, triangleMaterial);
                 const angle = (i / 3) * Math.PI * 2;
-                triangle.position.set(Math.cos(angle) * 0.23, 1.08, 0.8 + Math.sin(angle) * 0.23);
+                triangle.position.set(Math.cos(angle) * 0.23, 0.88, 0.8 + Math.sin(angle) * 0.23); // Adjusted position
                 triangle.rotation.x = 0; // Upright triangles
                 triangle.userData = { type: 'crown-triangle' };
                 crownGroup.add(triangle);
