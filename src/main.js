@@ -963,16 +963,9 @@ window.submitScore = function() {
     const playerName = nameInput.value.trim() || 'Anonymous';
     
     // Add score to leaderboard
-    leaderboard.push({ name: playerName, score: score });
-    
-    // Sort leaderboard by score
-    leaderboard.sort((a, b) => b.score - a.score);
-    
-    // Keep only top 10 scores
-    leaderboard = leaderboard.slice(0, 10);
-    
-    // Save to localStorage
-    localStorage.setItem('otterRiverLeaderboard', JSON.stringify(leaderboard));
+    const scores = JSON.parse(localStorage.getItem('scores') || '[]');
+    scores.push({ name: playerName, score: score, level: level, time: Math.round(gameTime) });
+    localStorage.setItem('scores', JSON.stringify(scores));
     
     // Update leaderboard display
     updateLeaderboard();
@@ -981,10 +974,16 @@ window.submitScore = function() {
     nameInput.value = '';
 };
 
-// Initialize game when window loads
+// Reset leaderboard
+function resetLeaderboard() {
+    localStorage.removeItem('scores');
+    updateLeaderboard();
+}
+
+// Call resetLeaderboard on game initialization
 window.onload = function() {
     init();
-    updateLeaderboard();
+    resetLeaderboard();
 };
 
 // Create the scene environment
