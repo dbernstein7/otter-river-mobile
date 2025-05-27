@@ -885,7 +885,7 @@ function update() {
     }
 
     // Update timer and date
-    gameTime += 1/60; // Assuming 60 FPS
+    gameTime += 1/120; // Slowed down timer
     const minutes = Math.floor(gameTime / 60);
     const seconds = Math.floor(gameTime % 60);
     document.getElementById('timer').textContent = `Time: ${minutes}:${seconds.toString().padStart(2, '0')}`;
