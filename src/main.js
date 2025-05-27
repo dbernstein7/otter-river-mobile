@@ -1208,5 +1208,9 @@ function returnToMenu() {
     // Reset otter position
     otter.position.set(0, 0.25, 0);
     otter.rotation.y = Math.PI;
+    // Clear timer
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
     return false;
 } 
