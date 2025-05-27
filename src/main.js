@@ -889,7 +889,7 @@ window.startGame = function() {
         showLevelUpMessage();
         // Increase base speed slightly with each level
         baseSpeed += 0.02;
-    }, 30000); // Changed from 120000 to 30000 (30 seconds)
+    }, 15000); // Changed from 30000 to 15000 (15 seconds)
     
     // Start spawning obstacles and fish
     lastObstacleTime = Date.now();
