@@ -393,14 +393,15 @@ function createOtter() {
         otter.add(leg);
     });
 
-    // Only add the top hat if unlocked
-    if (localStorage.getItem('topHatUnlocked') === 'true') {
+    // Only add the top hat if unlocked and checkbox is checked
+    if (localStorage.getItem('topHatUnlocked') === 'true' && document.getElementById('top-hat-toggle').checked) {
         // Top Hat
         const hatGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.5, 16);
         const hatMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
         const hat = new THREE.Mesh(hatGeometry, hatMaterial);
         hat.position.set(0, 0.8, 0.8);
         hat.castShadow = true;
+        hat.userData = { type: 'hat' };
         otter.add(hat);
 
         // Brim
