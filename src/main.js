@@ -414,6 +414,33 @@ function createOtter() {
         otter.add(brim);
     }
 
+    // Only add the crown if unlocked and checkbox is checked
+    if (localStorage.getItem('crownUnlocked') === 'true' && document.getElementById('crown-toggle') && document.getElementById('crown-toggle').checked) {
+        // Crown (simple gold band with spikes)
+        const crownGroup = new THREE.Group();
+        // Band
+        const bandGeometry = new THREE.TorusGeometry(0.32, 0.07, 8, 24);
+        const bandMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
+        const band = new THREE.Mesh(bandGeometry, bandMaterial);
+        band.position.set(0, 0.95, 0.8);
+        band.rotation.x = Math.PI / 2;
+        band.userData = { type: 'crown-band' };
+        crownGroup.add(band);
+        // Spikes
+        for (let i = 0; i < 5; i++) {
+            const spikeGeometry = new THREE.ConeGeometry(0.07, 0.25, 8);
+            const spikeMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
+            const spike = new THREE.Mesh(spikeGeometry, spikeMaterial);
+            const angle = (i / 5) * Math.PI * 2;
+            spike.position.set(Math.cos(angle) * 0.23, 1.08, 0.8 + Math.sin(angle) * 0.23);
+            spike.rotation.x = Math.PI / 2;
+            spike.userData = { type: 'crown-spike' };
+            crownGroup.add(spike);
+        }
+        crownGroup.userData = { type: 'crown' };
+        otter.add(crownGroup);
+    }
+
     // Set initial position
     otter.position.set(0, 0.25, 0);
     otter.rotation.y = Math.PI;
@@ -792,6 +819,10 @@ function endGame() {
     // Unlock top hat if score >= 100
     if (score >= 100) {
         localStorage.setItem('topHatUnlocked', 'true');
+    }
+    // Unlock crown if score >= 300
+    if (score >= 300) {
+        localStorage.setItem('crownUnlocked', 'true');
     }
     updateUnlockables();
     // Update leaderboard
@@ -1176,6 +1207,20 @@ function updateUnlockables() {
             toggle.disabled = true;
         }
     }
+    const crownStatus = document.getElementById('crown-status');
+    const crownToggle = document.getElementById('crown-toggle');
+    const crownUnlocked = localStorage.getItem('crownUnlocked') === 'true';
+    if (crownStatus) {
+        if (crownUnlocked) {
+            crownStatus.textContent = 'Unlocked!';
+            crownStatus.style.color = '#FFD700';
+            crownToggle.disabled = false;
+        } else {
+            crownStatus.textContent = 'Locked (Score 300+ in a game)';
+            crownStatus.style.color = '#ff00ff';
+            crownToggle.disabled = true;
+        }
+    }
 }
 
 // Add event listener for top hat toggle
@@ -1205,7 +1250,51 @@ document.getElementById('top-hat-toggle').addEventListener('change', function() 
         const brim = otter.children.find(child => child.userData && child.userData.type === 'brim');
         if (brim) otter.remove(brim);
     }
+    // Remove any existing crown
+    const crown = otter.children.find(child => child.userData && child.userData.type === 'crown');
+    if (crown) otter.remove(crown);
+    const crownToggle = document.getElementById('crown-toggle');
+    if (crownToggle) crownToggle.checked = false;
 });
+
+// Add event listener for crown toggle
+if (document.getElementById('crown-toggle')) {
+    document.getElementById('crown-toggle').addEventListener('change', function() {
+        // Remove any existing crown or top hat
+        const crown = otter.children.find(child => child.userData && child.userData.type === 'crown');
+        if (crown) otter.remove(crown);
+        const hat = otter.children.find(child => child.userData && child.userData.type === 'hat');
+        if (hat) otter.remove(hat);
+        const brim = otter.children.find(child => child.userData && child.userData.type === 'brim');
+        if (brim) otter.remove(brim);
+        if (this.checked) {
+            // Add crown (same as above)
+            const crownGroup = new THREE.Group();
+            const bandGeometry = new THREE.TorusGeometry(0.32, 0.07, 8, 24);
+            const bandMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
+            const band = new THREE.Mesh(bandGeometry, bandMaterial);
+            band.position.set(0, 0.95, 0.8);
+            band.rotation.x = Math.PI / 2;
+            band.userData = { type: 'crown-band' };
+            crownGroup.add(band);
+            for (let i = 0; i < 5; i++) {
+                const spikeGeometry = new THREE.ConeGeometry(0.07, 0.25, 8);
+                const spikeMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
+                const spike = new THREE.Mesh(spikeGeometry, spikeMaterial);
+                const angle = (i / 5) * Math.PI * 2;
+                spike.position.set(Math.cos(angle) * 0.23, 1.08, 0.8 + Math.sin(angle) * 0.23);
+                spike.rotation.x = Math.PI / 2;
+                spike.userData = { type: 'crown-spike' };
+                crownGroup.add(spike);
+            }
+            crownGroup.userData = { type: 'crown' };
+            otter.add(crownGroup);
+            // Uncheck top hat if checked
+            const topHatToggle = document.getElementById('top-hat-toggle');
+            if (topHatToggle) topHatToggle.checked = false;
+        }
+    });
+}
 
 function returnToMenu() {
     document.getElementById('game-over').style.display = 'none';
