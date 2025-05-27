@@ -367,7 +367,7 @@ function createOtter() {
     const tail = new THREE.Mesh(tailGeometry, tailMaterial);
     tail.position.set(0, 0.2, -1);
     tail.scale.set(1.5, 0.2, 0.8); // Adjusted scale for long and skinny tail
-    tail.rotation.z = Math.PI / 2; // Rotate tail 90 degrees around Z axis
+    tail.rotation.y = Math.PI / 2; // Rotate tail 90 degrees around Y axis
     tail.castShadow = true;
     otter.add(tail);
 
@@ -889,7 +889,7 @@ window.startGame = function() {
         showLevelUpMessage();
         // Increase base speed slightly with each level
         baseSpeed += 0.02;
-    }, 60000); // Changed from 30000 to 60000 (60 seconds)
+    }, 120000); // Changed from 60000 to 120000 (120 seconds)
     
     // Start spawning obstacles and fish
     lastObstacleTime = Date.now();
