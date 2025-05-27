@@ -1184,5 +1184,8 @@ function returnToMenu() {
             otter.remove(hat);
         }
     }
+    // Stop the game loop
+    gameStarted = false;
+    gameOver = true;
     return false;
 } 
