@@ -1171,4 +1171,18 @@ function updateUnlockables() {
             status.style.color = '#ff00ff';
         }
     }
+}
+
+function returnToMenu() {
+    document.getElementById('game-over').style.display = 'none';
+    document.getElementById('start-screen').style.display = 'block';
+    resetGameState();
+    // Remove top hat from otter if it was added
+    if (otter) {
+        const hat = otter.children.find(child => child.userData && child.userData.type === 'hat');
+        if (hat) {
+            otter.remove(hat);
+        }
+    }
+    return false;
 } 
