@@ -787,8 +787,8 @@ function endGame() {
     scores.push({ name: nameInput.value.trim() || 'Anonymous', score: score, level: level, time: Math.round(gameTime) });
     localStorage.setItem('scores', JSON.stringify(scores));
     
-    // Unlock top hat if score >= 500
-    if (score >= 500) {
+    // Unlock top hat if score >= 100
+    if (score >= 100) {
         localStorage.setItem('topHatUnlocked', 'true');
     }
     updateUnlockables();
@@ -1167,7 +1167,7 @@ function updateUnlockables() {
             status.textContent = 'Unlocked!';
             status.style.color = '#4CAF50';
         } else {
-            status.textContent = 'Locked (Score 500+ in a game)';
+            status.textContent = 'Locked (Score 100+ in a game)';
             status.style.color = '#ff00ff';
         }
     }
