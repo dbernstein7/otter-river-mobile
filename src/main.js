@@ -754,15 +754,19 @@ function endGame() {
         clearInterval(timerInterval);
     }
     
-    // Save score, level, and time to localStorage
-    const scores = JSON.parse(localStorage.getItem('scores') || '[]');
-    scores.push({ name: 'Player', score: score, level: level, time: gameTime });
-    localStorage.setItem('scores', JSON.stringify(scores));
-    
     // Show game over screen
     document.getElementById('game-over').style.display = 'block';
     document.getElementById('final-score').textContent = `Final Score: ${score}`;
     document.getElementById('name-input').style.display = 'block';
+    
+    // Allow player to input name
+    const nameInput = document.getElementById('player-name');
+    nameInput.focus();
+    
+    // Save score, level, and time to localStorage
+    const scores = JSON.parse(localStorage.getItem('scores') || '[]');
+    scores.push({ name: nameInput.value.trim() || 'Anonymous', score: score, level: level, time: Math.round(gameTime) });
+    localStorage.setItem('scores', JSON.stringify(scores));
     
     // Update leaderboard
     updateLeaderboard();
