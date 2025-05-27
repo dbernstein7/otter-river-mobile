@@ -430,7 +430,7 @@ function createOtter() {
         const triangleMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
         const triangle = new THREE.Mesh(triangleGeometry, triangleMaterial);
         const angle = (i / 3) * Math.PI * 2;
-        triangle.position.set(Math.cos(angle) * 0.3, 0.9, 0.8 + Math.sin(angle) * 0.3); // Adjusted position for alignment
+        triangle.position.set(Math.cos(angle) * 0.3, 1.05, 0.8 + Math.sin(angle) * 0.3); // Raised Y position for top of torus
         triangle.rotation.x = 0; // Upright triangles
         triangle.userData = { type: 'crown-triangle' };
         crownGroup.add(triangle);
@@ -1281,7 +1281,7 @@ if (document.getElementById('crown-toggle')) {
                 const triangleMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
                 const triangle = new THREE.Mesh(triangleGeometry, triangleMaterial);
                 const angle = (i / 3) * Math.PI * 2;
-                triangle.position.set(Math.cos(angle) * 0.3, 0.9, 0.8 + Math.sin(angle) * 0.3); // Adjusted position for alignment
+                triangle.position.set(Math.cos(angle) * 0.3, 1.05, 0.8 + Math.sin(angle) * 0.3); // Raised Y position for top of torus
                 triangle.rotation.x = 0; // Upright triangles
                 triangle.userData = { type: 'crown-triangle' };
                 crownGroup.add(triangle);
