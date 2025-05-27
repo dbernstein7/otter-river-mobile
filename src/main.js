@@ -414,7 +414,7 @@ function createOtter() {
         otter.add(brim);
     }
 
-    // Add crown directly for testing
+    // Add crown with 3 pointy triangles
     const crownGroup = new THREE.Group();
     const bandGeometry = new THREE.TorusGeometry(0.32, 0.07, 8, 24);
     const bandMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
@@ -423,15 +423,17 @@ function createOtter() {
     band.rotation.x = Math.PI / 2;
     band.userData = { type: 'crown-band' };
     crownGroup.add(band);
-    for (let i = 0; i < 5; i++) {
-        const spikeGeometry = new THREE.ConeGeometry(0.07, 0.25, 8);
-        const spikeMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
-        const spike = new THREE.Mesh(spikeGeometry, spikeMaterial);
-        const angle = (i / 5) * Math.PI * 2;
-        spike.position.set(Math.cos(angle) * 0.23, 1.08, 0.8 + Math.sin(angle) * 0.23);
-        spike.rotation.x = Math.PI / 2;
-        spike.userData = { type: 'crown-spike' };
-        crownGroup.add(spike);
+
+    // Add 3 pointy triangles
+    for (let i = 0; i < 3; i++) {
+        const triangleGeometry = new THREE.ConeGeometry(0.1, 0.3, 3);
+        const triangleMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
+        const triangle = new THREE.Mesh(triangleGeometry, triangleMaterial);
+        const angle = (i / 3) * Math.PI * 2;
+        triangle.position.set(Math.cos(angle) * 0.23, 1.08, 0.8 + Math.sin(angle) * 0.23);
+        triangle.rotation.x = Math.PI / 2;
+        triangle.userData = { type: 'crown-triangle' };
+        crownGroup.add(triangle);
     }
     crownGroup.userData = { type: 'crown' };
     otter.add(crownGroup);
@@ -1263,7 +1265,7 @@ if (document.getElementById('crown-toggle')) {
         const brim = otter.children.find(child => child.userData && child.userData.type === 'brim');
         if (brim) otter.remove(brim);
         if (this.checked) {
-            // Add crown directly for testing
+            // Add crown with 3 pointy triangles
             const crownGroup = new THREE.Group();
             const bandGeometry = new THREE.TorusGeometry(0.32, 0.07, 8, 24);
             const bandMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
@@ -1272,15 +1274,17 @@ if (document.getElementById('crown-toggle')) {
             band.rotation.x = Math.PI / 2;
             band.userData = { type: 'crown-band' };
             crownGroup.add(band);
-            for (let i = 0; i < 5; i++) {
-                const spikeGeometry = new THREE.ConeGeometry(0.07, 0.25, 8);
-                const spikeMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
-                const spike = new THREE.Mesh(spikeGeometry, spikeMaterial);
-                const angle = (i / 5) * Math.PI * 2;
-                spike.position.set(Math.cos(angle) * 0.23, 1.08, 0.8 + Math.sin(angle) * 0.23);
-                spike.rotation.x = Math.PI / 2;
-                spike.userData = { type: 'crown-spike' };
-                crownGroup.add(spike);
+
+            // Add 3 pointy triangles
+            for (let i = 0; i < 3; i++) {
+                const triangleGeometry = new THREE.ConeGeometry(0.1, 0.3, 3);
+                const triangleMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
+                const triangle = new THREE.Mesh(triangleGeometry, triangleMaterial);
+                const angle = (i / 3) * Math.PI * 2;
+                triangle.position.set(Math.cos(angle) * 0.23, 1.08, 0.8 + Math.sin(angle) * 0.23);
+                triangle.rotation.x = Math.PI / 2;
+                triangle.userData = { type: 'crown-triangle' };
+                crownGroup.add(triangle);
             }
             crownGroup.userData = { type: 'crown' };
             otter.add(crownGroup);
