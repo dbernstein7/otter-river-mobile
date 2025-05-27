@@ -1187,5 +1187,10 @@ function returnToMenu() {
     // Stop the game loop
     gameStarted = false;
     gameOver = true;
+    // Clear existing game elements
+    obstacles.forEach(obstacle => scene.remove(obstacle));
+    fish.forEach(fish => scene.remove(fish));
+    obstacles = [];
+    fish = [];
     return false;
 } 
