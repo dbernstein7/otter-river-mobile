@@ -725,6 +725,12 @@ function createFish() {
     );
     
     fishGroup.userData = { type: selectedType };
+
+    // Add point light to make it glow
+    const fishLight = new THREE.PointLight(0xffffff, 1, 2);
+    fishLight.position.set(0, 0, 0);
+    fishGroup.add(fishLight);
+
     scene.add(fishGroup);
     fish.push(fishGroup);
 }
