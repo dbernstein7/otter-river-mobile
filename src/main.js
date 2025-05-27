@@ -393,6 +393,14 @@ function createOtter() {
         otter.add(leg);
     });
 
+    // Top Hat
+    const hatGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.5, 16);
+    const hatMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
+    const hat = new THREE.Mesh(hatGeometry, hatMaterial);
+    hat.position.set(0, 0.8, 0.8);
+    hat.castShadow = true;
+    otter.add(hat);
+
     // Set initial position
     otter.position.set(0, 0.25, 0);
     otter.rotation.y = Math.PI;
