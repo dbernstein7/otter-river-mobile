@@ -797,9 +797,41 @@
                     </div>
                 </div>
                 <div class="menu-right">
-                    <div class="leaderboard">
-                        <h2 class="leaderboard-title">Top Scores</h2>
-                        <ul id="start-scores" class="leaderboard-list"></ul>
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div class="leaderboard">
+                            <h2 class="leaderboard-title">Top Scores</h2>
+                            <ul id="start-scores" class="leaderboard-list"></ul>
+                        </div>
+                        <div class="unlockables">
+                            <h2 class="leaderboard-title">Unlockables</h2>
+                            <div id="top-hat-unlock" class="unlockable-item" style="position: relative; display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.7); border-radius: 10px; padding: 10px 15px; margin-top: 5px; min-height: 60px;">
+                                <div style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); z-index: 0; opacity: 0.25;">
+                                    <!-- Simple SVG otter with top hat -->
+                                    <svg width="48" height="48" viewBox="0 0 48 48">
+                                        <!-- Body -->
+                                        <ellipse cx="24" cy="36" rx="12" ry="8" fill="#8B4513"/>
+                                        <!-- Head -->
+                                        <ellipse cx="24" cy="24" rx="8" ry="8" fill="#8B4513"/>
+                                        <!-- Ears -->
+                                        <ellipse cx="16" cy="20" rx="2" ry="2.5" fill="#8B4513"/>
+                                        <ellipse cx="32" cy="20" rx="2" ry="2.5" fill="#8B4513"/>
+                                        <!-- Eyes -->
+                                        <ellipse cx="21" cy="25" rx="1" ry="1.2" fill="#000"/>
+                                        <ellipse cx="27" cy="25" rx="1" ry="1.2" fill="#000"/>
+                                        <!-- Nose -->
+                                        <ellipse cx="24" cy="28" rx="1.2" ry="0.7" fill="#222"/>
+                                        <!-- Top Hat Brim -->
+                                        <ellipse cx="24" cy="16.5" rx="6" ry="1.2" fill="#111"/>
+                                        <!-- Top Hat Body -->
+                                        <rect x="18" y="10" width="12" height="7" rx="2" fill="#111"/>
+                                        <!-- Top Hat Top -->
+                                        <ellipse cx="24" cy="10" rx="6" ry="1.2" fill="#222"/>
+                                    </svg>
+                                </div>
+                                <span style="font-size: 1.5em; margin-left: 60px; z-index: 1;">🎩 Top Hat</span>
+                                <span id="top-hat-status" style="font-size: 1em; color: #ff00ff; z-index: 1;">Locked (Score 100+ in a game)</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

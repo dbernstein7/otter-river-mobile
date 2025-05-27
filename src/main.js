@@ -784,6 +784,11 @@ function endGame() {
     scores.push({ name: nameInput.value.trim() || 'Anonymous', score: score, level: level, time: Math.round(gameTime) });
     localStorage.setItem('scores', JSON.stringify(scores));
     
+    // Unlock top hat if score >= 100
+    if (score >= 100) {
+        localStorage.setItem('topHatUnlocked', 'true');
+    }
+    updateUnlockables();
     // Update leaderboard
     updateLeaderboard();
 }
@@ -1002,6 +1007,7 @@ function resetLeaderboard() {
 window.onload = function() {
     init();
     resetLeaderboard();
+    updateUnlockables();
 };
 
 // Create the scene environment
@@ -1147,4 +1153,19 @@ function showLevelUpMessage() {
         msg.style.opacity = '0';
         setTimeout(() => { msg.style.display = 'none'; }, 500);
     }, 1000);
+}
+
+// Update unlockables section on start menu
+function updateUnlockables() {
+    const unlocked = localStorage.getItem('topHatUnlocked') === 'true';
+    const status = document.getElementById('top-hat-status');
+    if (status) {
+        if (unlocked) {
+            status.textContent = 'Unlocked!';
+            status.style.color = '#4CAF50';
+        } else {
+            status.textContent = 'Locked (Score 100+ in a game)';
+            status.style.color = '#ff00ff';
+        }
+    }
 } 
