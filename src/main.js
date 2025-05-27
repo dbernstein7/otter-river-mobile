@@ -393,21 +393,24 @@ function createOtter() {
         otter.add(leg);
     });
 
-    // Top Hat
-    const hatGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.5, 16);
-    const hatMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
-    const hat = new THREE.Mesh(hatGeometry, hatMaterial);
-    hat.position.set(0, 0.8, 0.8);
-    hat.castShadow = true;
-    otter.add(hat);
+    // Only add the top hat if unlocked
+    if (localStorage.getItem('topHatUnlocked') === 'true') {
+        // Top Hat
+        const hatGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.5, 16);
+        const hatMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
+        const hat = new THREE.Mesh(hatGeometry, hatMaterial);
+        hat.position.set(0, 0.8, 0.8);
+        hat.castShadow = true;
+        otter.add(hat);
 
-    // Brim
-    const brimGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 16);
-    const brimMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
-    const brim = new THREE.Mesh(brimGeometry, brimMaterial);
-    brim.position.set(0, 0.6, 0.8);
-    brim.castShadow = true;
-    otter.add(brim);
+        // Brim
+        const brimGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 16);
+        const brimMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
+        const brim = new THREE.Mesh(brimGeometry, brimMaterial);
+        brim.position.set(0, 0.6, 0.8);
+        brim.castShadow = true;
+        otter.add(brim);
+    }
 
     // Set initial position
     otter.position.set(0, 0.25, 0);
