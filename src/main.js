@@ -393,7 +393,7 @@ function createOtter() {
         otter.add(leg);
     });
 
-    // Only add the top hat if unlocked and checkbox is checked
+    // Only add the top hat and brim if unlocked and checkbox is checked
     if (localStorage.getItem('topHatUnlocked') === 'true' && document.getElementById('top-hat-toggle').checked) {
         // Top Hat
         const hatGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.5, 16);
@@ -410,6 +410,7 @@ function createOtter() {
         const brim = new THREE.Mesh(brimGeometry, brimMaterial);
         brim.position.set(0, 0.6, 0.8);
         brim.castShadow = true;
+        brim.userData = { type: 'brim' };
         otter.add(brim);
     }
 
@@ -1195,13 +1196,14 @@ document.getElementById('top-hat-toggle').addEventListener('change', function() 
         const brim = new THREE.Mesh(brimGeometry, brimMaterial);
         brim.position.set(0, 0.6, 0.8);
         brim.castShadow = true;
+        brim.userData = { type: 'brim' };
         otter.add(brim);
     } else {
-        // Remove top hat from otter
+        // Remove top hat and brim from otter
         const hat = otter.children.find(child => child.userData && child.userData.type === 'hat');
-        if (hat) {
-            otter.remove(hat);
-        }
+        if (hat) otter.remove(hat);
+        const brim = otter.children.find(child => child.userData && child.userData.type === 'brim');
+        if (brim) otter.remove(brim);
     }
 });
 
