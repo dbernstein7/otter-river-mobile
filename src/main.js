@@ -915,19 +915,6 @@ window.startGame = function() {
     // Hide start screen
     document.getElementById('start-screen').style.display = 'none';
     
-    // Reset game state
-    resetGameState();
-    
-    // Clear existing game elements
-    obstacles.forEach(obstacle => scene.remove(obstacle));
-    fish.forEach(fish => scene.remove(fish));
-    obstacles = [];
-    fish = [];
-    
-    // Reset otter position
-    otter.position.set(0, 0.25, 0);
-    otter.rotation.y = Math.PI;
-    
     // Start timer for level progression
     timerInterval = setInterval(() => {
         level++;
@@ -1208,9 +1195,5 @@ function returnToMenu() {
     // Reset otter position
     otter.position.set(0, 0.25, 0);
     otter.rotation.y = Math.PI;
-    // Clear timer
-    if (timerInterval) {
-        clearInterval(timerInterval);
-    }
     return false;
 } 
