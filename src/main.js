@@ -416,7 +416,7 @@ function createOtter() {
 
     // Add crown with triangles covering otter's head fully and aligned with torus
     const crownGroup = new THREE.Group();
-    const bandGeometry = new THREE.TorusGeometry(0.32, 0.07, 8, 24);
+    const bandGeometry = new THREE.TorusGeometry(0.38, 0.10, 12, 32);
     const bandMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
     const band = new THREE.Mesh(bandGeometry, bandMaterial);
     band.position.set(0, 0.75, 0.8); // Lowered position to touch otter's head
@@ -1267,7 +1267,7 @@ if (document.getElementById('crown-toggle')) {
         if (this.checked) {
             // Add crown with triangles covering otter's head fully and aligned with torus
             const crownGroup = new THREE.Group();
-            const bandGeometry = new THREE.TorusGeometry(0.32, 0.07, 8, 24);
+            const bandGeometry = new THREE.TorusGeometry(0.38, 0.10, 12, 32);
             const bandMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
             const band = new THREE.Mesh(bandGeometry, bandMaterial);
             band.position.set(0, 0.75, 0.8); // Lowered position to touch otter's head
