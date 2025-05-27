@@ -855,13 +855,20 @@
 
         <!-- Game Over Screen -->
         <div id="game-over" style="display: none;">
-            <h2>Game Over</h2>
-            <p id="final-score">Final Score: 0</p>
-            <div id="name-input" style="display: none;">
-                <input type="text" id="player-name" placeholder="Enter your name">
-                <button onclick="submitScore()">Submit Score</button>
+            <a href="#" class="menu-link" onclick="returnToMenu()">← Back to Menu</a>
+            <div class="game-over-content">
+                <h1 class="game-title">Game Over!</h1>
+                <div id="final-score">Final Score: 0</div>
+                <div id="name-input">
+                    <input type="text" id="player-name" placeholder="Enter your name" maxlength="20">
+                    <button onclick="submitScore()">Submit Score</button>
+                </div>
+                <div class="leaderboard">
+                    <h2 class="leaderboard-title">Top Scores</h2>
+                    <ul id="top-scores" class="leaderboard-list"></ul>
+                </div>
+                <button class="start-button" onclick="restartGame()">Play Again</button>
             </div>
-            <button onclick="restartGame()">Play Again</button>
         </div>
 
         <!-- Controls Info -->
