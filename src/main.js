@@ -889,7 +889,7 @@ window.startGame = function() {
         showLevelUpMessage();
         // Increase base speed slightly with each level
         baseSpeed += 0.02;
-    }, 120000); // Changed from 60000 to 120000 (120 seconds)
+    }, 60000); // Changed from 30000 to 60000 (60 seconds)
     
     // Start spawning obstacles and fish
     lastObstacleTime = Date.now();
@@ -934,20 +934,15 @@ function updateLevel() {
 
 // Leaderboard functionality
 function updateLeaderboard() {
-    const startScores = document.getElementById('start-scores');
-    const topScores = document.getElementById('top-scores');
-    const scoresList = leaderboard
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 5)
-        .map((entry, index) => `${entry.name}: ${entry.score}`)
-        .join('</li><li>');
-    
-    if (startScores) {
-        startScores.innerHTML = `<li>${scoresList}</li>`;
-    }
-    if (topScores) {
-        topScores.innerHTML = `<li>${scoresList}</li>`;
-    }
+    const leaderboardList = document.getElementById('top-scores');
+    leaderboardList.innerHTML = '';
+    const scores = JSON.parse(localStorage.getItem('scores')) || [];
+    scores.sort((a, b) => b.score - a.score);
+    scores.slice(0, 10).forEach(score => {
+        const li = document.createElement('li');
+        li.textContent = `${score.name}: ${score.score} points, Level ${score.level}, Time ${score.time}`;
+        leaderboardList.appendChild(li);
+    });
 }
 
 // Submit score function
