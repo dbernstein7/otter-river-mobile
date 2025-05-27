@@ -394,6 +394,7 @@ function createOtter() {
 
     // Set initial position
     otter.position.set(0, 0.25, 0);
+    otter.rotation.y = 0;
     scene.add(otter);
 }
 
@@ -884,6 +885,7 @@ window.startGame = function() {
     timerInterval = setInterval(() => {
         level++;
         updateLevel();
+        showLevelUpMessage();
         // Increase base speed slightly with each level
         baseSpeed += 0.02;
     }, 30000); // Changed from 30000 to 30000 (30 seconds)
@@ -1129,4 +1131,20 @@ function updateEnvironment() {
             cloud.position.y += Math.sin(Date.now() * 0.001 + cloud.position.x) * 0.01;
         });
     }
+}
+
+function showLevelUpMessage() {
+    let msg = document.getElementById('level-up-message');
+    if (!msg) {
+        msg = document.createElement('div');
+        msg.id = 'level-up-message';
+        document.body.appendChild(msg);
+    }
+    msg.textContent = `Level ${level}!`;
+    msg.style.display = 'block';
+    msg.style.opacity = '1';
+    setTimeout(() => {
+        msg.style.opacity = '0';
+        setTimeout(() => { msg.style.display = 'none'; }, 500);
+    }, 1000);
 } 

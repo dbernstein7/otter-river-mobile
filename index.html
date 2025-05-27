@@ -323,31 +323,36 @@
             transform: translateX(-50%);
             color: white;
             font-size: 1.4em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            text-shadow: 2px 2px 8px #00ffff, 0 0 10px #ff00ff, 0 0 20px #fff;
             z-index: 10;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px 30px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
+            background: linear-gradient(135deg, rgba(0,0,0,0.85), rgba(76,175,80,0.25));
+            padding: 18px 40px;
+            border-radius: 30px;
+            backdrop-filter: blur(16px);
             display: flex;
-            gap: 25px;
+            gap: 30px;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37), 0 4px 15px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255,255,255,0.18);
+            transition: box-shadow 0.3s;
         }
         .game-info div {
-            padding: 8px 20px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 24px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.12);
             min-width: 130px;
             text-align: center;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1.5px solid rgba(255,255,255,0.12);
+            font-weight: 600;
+            font-size: 1.1em;
+            box-shadow: 0 2px 8px rgba(0,255,255,0.08);
         }
         .game-info div:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px);
+            background: rgba(255,255,255,0.18);
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 4px 16px rgba(255,0,255,0.12);
         }
         .controls-info {
             position: absolute;
@@ -780,6 +785,9 @@
             <p>⬅️ Left: A or ←</p>
             <p>➡️ Right: D or →</p>
         </div>
+
+        <!-- Level Up Message -->
+        <div id="level-up-message" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:200;font-size:3em;font-family:'Arial Rounded MT Bold',Arial,sans-serif;color:#fff;text-shadow:0 0 20px #00ffff,0 0 40px #ff00ff;background:rgba(0,0,0,0.7);padding:30px 60px;border-radius:30px;pointer-events:none;transition:opacity 0.5s;opacity:0;"></div>
     </div>
 
     <script type="module" src="/src/main.js"></script>
