@@ -754,6 +754,11 @@ function endGame() {
         clearInterval(timerInterval);
     }
     
+    // Save score, level, and time to localStorage
+    const scores = JSON.parse(localStorage.getItem('scores') || '[]');
+    scores.push({ name: 'Player', score: score, level: level, time: gameTime });
+    localStorage.setItem('scores', JSON.stringify(scores));
+    
     // Show game over screen
     document.getElementById('game-over').style.display = 'block';
     document.getElementById('final-score').textContent = `Final Score: ${score}`;
