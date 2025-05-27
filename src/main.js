@@ -287,115 +287,109 @@ function createRiver() {
 
 // Create the otter
 function createOtter() {
-    otter = new THREE.Group();
+    const otterGroup = new THREE.Group();
 
-    // Body
-    const bodyGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+    // Create body
+    const bodyGeometry = new THREE.CapsuleGeometry(0.5, 1, 4, 8);
     const bodyMaterial = new THREE.MeshStandardMaterial({
         color: 0x8B4513,
         roughness: 0.7,
-        metalness: 0.1
+        metalness: 0.2
     });
     const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-    body.scale.set(1, 0.8, 1.2);
-    body.castShadow = true;
-    otter.add(body);
+    body.rotation.x = Math.PI / 2;
+    otterGroup.add(body);
 
-    // Head
-    const headGeometry = new THREE.SphereGeometry(0.45, 16, 16);
+    // Create head
+    const headGeometry = new THREE.SphereGeometry(0.4, 32, 32);
     const headMaterial = new THREE.MeshStandardMaterial({
         color: 0x8B4513,
         roughness: 0.7,
-        metalness: 0.1
+        metalness: 0.2
     });
     const head = new THREE.Mesh(headGeometry, headMaterial);
-    head.position.set(0, 0.3, 0.8);
-    head.castShadow = true;
-    otter.add(head);
+    head.position.set(0, 0.3, -0.8);
+    otterGroup.add(head);
 
-    // Snout
-    const snoutGeometry = new THREE.SphereGeometry(0.25, 16, 16);
-    const snoutMaterial = new THREE.MeshStandardMaterial({
-        color: 0x8B4513,
-        roughness: 0.7,
-        metalness: 0.1
-    });
-    const snout = new THREE.Mesh(snoutGeometry, snoutMaterial);
-    snout.position.set(0, 0.2, 1.2);
-    snout.scale.set(1, 0.8, 0.6);
-    snout.castShadow = true;
-    otter.add(snout);
-
-    // Nose
-    const noseGeometry = new THREE.SphereGeometry(0.1, 8, 8);
-    const noseMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
-    const nose = new THREE.Mesh(noseGeometry, noseMaterial);
-    nose.position.set(0, 0.2, 1.35);
-    otter.add(nose);
-
-    // Eyes
-    const eyeGeometry = new THREE.SphereGeometry(0.12, 8, 8);
-    const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
-    const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    leftEye.position.set(0.25, 0.4, 1.1);
-    rightEye.position.set(-0.25, 0.4, 1.1);
-    otter.add(leftEye);
-    otter.add(rightEye);
-
-    // Ears
-    const earGeometry = new THREE.SphereGeometry(0.15, 8, 8);
-    const earMaterial = new THREE.MeshStandardMaterial({
-        color: 0x8B4513,
-        roughness: 0.7,
-        metalness: 0.1
-    });
-    const leftEar = new THREE.Mesh(earGeometry, earMaterial);
-    const rightEar = new THREE.Mesh(earGeometry, earMaterial);
-    leftEar.position.set(0.3, 0.6, 0.9);
-    rightEar.position.set(-0.3, 0.6, 0.9);
-    otter.add(leftEar);
-    otter.add(rightEar);
-
-    // Tail
-    const tailGeometry = new THREE.SphereGeometry(0.4, 16, 16);
+    // Create tail (flatter and skinnier)
+    const tailGeometry = new THREE.BoxGeometry(0.3, 0.1, 0.8); // Made flatter (0.1 height) and skinnier (0.3 width)
     const tailMaterial = new THREE.MeshStandardMaterial({
         color: 0x8B4513,
         roughness: 0.7,
-        metalness: 0.1
+        metalness: 0.2
     });
     const tail = new THREE.Mesh(tailGeometry, tailMaterial);
-    tail.position.set(0, 0.2, -1);
-    tail.scale.set(1, 0.8, 1.2);
-    tail.castShadow = true;
-    otter.add(tail);
+    tail.position.set(0, 0, 0.8);
+    tail.rotation.x = Math.PI / 6; // Slight upward angle
+    otterGroup.add(tail);
 
-    // Legs
-    const legGeometry = new THREE.SphereGeometry(0.2, 8, 8);
+    // Create legs
+    const legGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.4);
     const legMaterial = new THREE.MeshStandardMaterial({
         color: 0x8B4513,
         roughness: 0.7,
-        metalness: 0.1
+        metalness: 0.2
     });
 
-    const positions = [
-        [0.4, -0.2, 0.5],   // Front right
-        [-0.4, -0.2, 0.5],  // Front left
-        [0.4, -0.2, -0.5],  // Back right
-        [-0.4, -0.2, -0.5]  // Back left
-    ];
+    // Front legs
+    const frontLeftLeg = new THREE.Mesh(legGeometry, legMaterial);
+    frontLeftLeg.position.set(0.3, -0.3, -0.4);
+    frontLeftLeg.rotation.x = Math.PI / 4;
+    otterGroup.add(frontLeftLeg);
 
-    positions.forEach(pos => {
-        const leg = new THREE.Mesh(legGeometry, legMaterial);
-        leg.position.set(...pos);
-        leg.castShadow = true;
-        otter.add(leg);
+    const frontRightLeg = new THREE.Mesh(legGeometry, legMaterial);
+    frontRightLeg.position.set(-0.3, -0.3, -0.4);
+    frontRightLeg.rotation.x = Math.PI / 4;
+    otterGroup.add(frontRightLeg);
+
+    // Back legs
+    const backLeftLeg = new THREE.Mesh(legGeometry, legMaterial);
+    backLeftLeg.position.set(0.3, -0.3, 0.4);
+    backLeftLeg.rotation.x = -Math.PI / 4;
+    otterGroup.add(backLeftLeg);
+
+    const backRightLeg = new THREE.Mesh(legGeometry, legMaterial);
+    backRightLeg.position.set(-0.3, -0.3, 0.4);
+    backRightLeg.rotation.x = -Math.PI / 4;
+    otterGroup.add(backRightLeg);
+
+    // Create eyes
+    const eyeGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+    const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+
+    const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+    leftEye.position.set(0.15, 0.3, -1.1);
+    otterGroup.add(leftEye);
+
+    const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+    rightEye.position.set(-0.15, 0.3, -1.1);
+    otterGroup.add(rightEye);
+
+    // Create nose
+    const noseGeometry = new THREE.SphereGeometry(0.08, 16, 16);
+    const noseMaterial = new THREE.MeshStandardMaterial({
+        color: 0x000000,
+        roughness: 0.7,
+        metalness: 0.2
+    });
+    const nose = new THREE.Mesh(noseGeometry, noseMaterial);
+    nose.position.set(0, 0.2, -1.2);
+    otterGroup.add(nose);
+
+    // Position the otter
+    otterGroup.position.set(0, 0.5, 0);
+    otterGroup.rotation.y = Math.PI; // Make otter face forward
+
+    // Add shadows
+    otterGroup.traverse((object) => {
+        if (object instanceof THREE.Mesh) {
+            object.castShadow = true;
+            object.receiveShadow = true;
+        }
     });
 
-    // Set initial position
-    otter.position.set(0, 0.25, 0);
-    otter.rotation.y = 0;
-    scene.add(otter);
+    scene.add(otterGroup);
+    return otterGroup;
 }
 
 // Create an obstacle
@@ -888,7 +882,7 @@ window.startGame = function() {
         showLevelUpMessage();
         // Increase base speed slightly with each level
         baseSpeed += 0.02;
-    }, 30000); // Changed from 30000 to 30000 (30 seconds)
+    }, 60000); // Changed from 30000 to 60000 (60 seconds)
     
     // Start spawning obstacles and fish
     lastObstacleTime = Date.now();
@@ -981,7 +975,7 @@ window.onload = function() {
 
 // Create the scene environment
 function createEnvironment() {
-    // Add sky
+    // Create sky
     const skyGeometry = new THREE.SphereGeometry(500, 32, 32);
     const skyMaterial = new THREE.MeshBasicMaterial({
         color: 0x87CEEB,
@@ -991,79 +985,50 @@ function createEnvironment() {
     scene.add(sky);
 
     // Create sun
-    const sunGroup = new THREE.Group();
-    
-    // Main sun sphere
-    const sunGeometry = new THREE.SphereGeometry(20, 32, 32); // Increased size from 15 to 20
+    const sunGeometry = new THREE.SphereGeometry(15, 32, 32);
     const sunMaterial = new THREE.MeshBasicMaterial({
-        color: 0xFFFF00,
-        transparent: true,
-        opacity: 0.95 // Increased opacity
+        color: 0xFFD700,
+        emissive: 0xFFD700,
+        emissiveIntensity: 0.5
     });
     const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-    sunGroup.add(sun);
+    sun.position.set(50, 50, -100);
+    scene.add(sun);
 
-    // Sun rays
-    const rayGeometry = new THREE.ConeGeometry(3, 25, 8); // Increased ray size
-    const rayMaterial = new THREE.MeshBasicMaterial({
-        color: 0xFFFF00,
+    // Add sun glow
+    const sunGlowGeometry = new THREE.SphereGeometry(17, 32, 32);
+    const sunGlowMaterial = new THREE.MeshBasicMaterial({
+        color: 0xFFD700,
         transparent: true,
-        opacity: 0.7 // Increased opacity
+        opacity: 0.3
     });
+    const sunGlow = new THREE.Mesh(sunGlowGeometry, sunGlowMaterial);
+    sunGlow.position.copy(sun.position);
+    scene.add(sunGlow);
 
-    // Create sun rays in a circular pattern
-    for (let i = 0; i < 16; i++) { // Increased number of rays from 12 to 16
-        const ray = new THREE.Mesh(rayGeometry, rayMaterial);
-        const angle = (i / 16) * Math.PI * 2;
-        ray.position.set(
-            Math.cos(angle) * 25, // Increased radius
-            Math.sin(angle) * 25, // Increased radius
-            0
-        );
-        ray.rotation.z = angle + Math.PI / 2;
-        sunGroup.add(ray);
-    }
-
-    // Position sun more centrally and higher
-    sunGroup.position.set(0, 80, -150); // Adjusted position to be centered and higher
-    scene.add(sunGroup);
-
-    // Create clouds
-    const cloudGroup = new THREE.Group();
-    const cloudMaterial = new THREE.MeshStandardMaterial({
-        color: 0xFFFFFF,
-        transparent: true,
-        opacity: 0.9,
+    // Create ground
+    const groundGeometry = new THREE.PlaneGeometry(1000, 1000);
+    const groundMaterial = new THREE.MeshStandardMaterial({
+        color: 0x228B22,
         roughness: 0.8,
         metalness: 0.2
     });
+    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -0.5;
+    ground.receiveShadow = true;
+    scene.add(ground);
 
-    // Create multiple clouds
-    for (let i = 0; i < 10; i++) {
-        const cloud = createCloud(cloudMaterial);
-        // Position clouds randomly in the sky, but below the sun
-        cloud.position.set(
-            (Math.random() - 0.5) * 300,
-            20 + Math.random() * 15, // Lowered cloud height
-            -100 - Math.random() * 200
+    // Add trees
+    for (let i = 0; i < 20; i++) {
+        const tree = createTree();
+        tree.position.set(
+            (Math.random() - 0.5) * 100,
+            0,
+            (Math.random() - 0.5) * 100
         );
-        cloud.scale.set(
-            1 + Math.random(),
-            1 + Math.random(),
-            1 + Math.random()
-        );
-        cloud.userData = {
-            speed: 0.02 + Math.random() * 0.03,
-            initialX: cloud.position.x
-        };
-        cloudGroup.add(cloud);
+        scene.add(tree);
     }
-
-    scene.add(cloudGroup);
-
-    // Store references for animation
-    scene.userData.sunGroup = sunGroup;
-    scene.userData.cloudGroup = cloudGroup;
 }
 
 function createCloud(material) {
