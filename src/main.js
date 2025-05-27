@@ -950,10 +950,12 @@ function updateLeaderboard() {
     const scores = JSON.parse(localStorage.getItem('scores') || '[]');
     scores.sort((a, b) => b.score - a.score);
     scores.slice(0, 5).forEach(score => {
-        const li = document.createElement('li');
-        li.textContent = `${score.name}: ${score.score} points, Level ${score.level}, Time ${score.time}`;
-        leaderboardList.appendChild(li);
-        startScores.appendChild(li.cloneNode(true));
+        if (score.name !== 'Anonymous') {
+            const li = document.createElement('li');
+            li.textContent = `${score.name}: ${score.score} points, Level ${score.level}, Time ${score.time}`;
+            leaderboardList.appendChild(li);
+            startScores.appendChild(li.cloneNode(true));
+        }
     });
 }
 
