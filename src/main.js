@@ -250,10 +250,10 @@ function createRiver() {
     const riverGeometry = new THREE.PlaneGeometry(40, 600, 40, 100);
     const riverMaterial = new THREE.MeshStandardMaterial({
         color: 0x0077be,
-        roughness: 0.1,
-        metalness: 0.2,
+        roughness: 1.0, // Max roughness to remove all reflections
+        metalness: 0.0, // No metalness
         transparent: true,
-        opacity: 1
+        opacity: 0.9
     });
     river = new THREE.Mesh(riverGeometry, riverMaterial);
     river.rotation.x = -Math.PI / 2;
@@ -266,10 +266,10 @@ function createRiver() {
     const streamGeometry = new THREE.PlaneGeometry(15, 600, 20, 100);
     const streamMaterial = new THREE.MeshStandardMaterial({
         color: 0x00BFFF,
-        roughness: 0.1,
-        metalness: 0.2,
+        roughness: 1.0, // Max roughness to remove all reflections
+        metalness: 0.0, // No metalness
         transparent: true,
-        opacity: 1
+        opacity: 0.9
     });
     const stream = new THREE.Mesh(streamGeometry, streamMaterial);
     stream.rotation.x = -Math.PI / 2;
@@ -367,6 +367,7 @@ function createOtter() {
     const tail = new THREE.Mesh(tailGeometry, tailMaterial);
     tail.position.set(0, 0.2, -1);
     tail.scale.set(1.5, 0.4, 0.8);
+    tail.rotation.x = Math.PI / 2; // Rotate tail 90 degrees
     tail.castShadow = true;
     otter.add(tail);
 
