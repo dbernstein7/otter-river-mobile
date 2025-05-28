@@ -273,8 +273,8 @@ const Game: React.FC = () => {
       0.1,
       1000
     );
-    (camera as any).position.set(0, 20, 30); // Adjusted position for better view
-    (camera as any).lookAt(0, 0, -100);
+    (camera as any).position.set(0, 15, 25); // Adjusted position for better view
+    (camera as any).lookAt(0, 0, -50);
     cameraRef.current = camera;
     scene.add(camera);
 
@@ -323,11 +323,11 @@ const Game: React.FC = () => {
     containerRef.current.addEventListener('touchmove', handleTouchMove);
     containerRef.current.addEventListener('touchend', handleTouchEnd);
 
-    // Add lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); // Increased ambient light
+    // Add lights with increased intensity for mobile
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Increased ambient light
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0); // Increased directional light
-    (directionalLight as any).position.set(5, 10, 5); // Adjusted light position
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2); // Increased directional light
+    (directionalLight as any).position.set(5, 15, 5); // Adjusted light position
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.width = 2048;
     directionalLight.shadow.mapSize.height = 2048;
@@ -763,17 +763,17 @@ const Game: React.FC = () => {
   const createRiver = () => {
     if (!sceneRef.current) return;
     const scene = sceneRef.current;
-    const riverGeometry = new THREE.PlaneGeometry(120, 1200, 20, 20); // Increased size
+    const riverGeometry = new THREE.PlaneGeometry(80, 800, 20, 20); // Adjusted size for mobile
     const riverMaterial = new THREE.MeshStandardMaterial({
       color: 0x4682B4,
       roughness: 0.2,
       metalness: 0.8,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.9 // Increased opacity
     }) as unknown as THREE.MeshBasicMaterial;
     const river = new THREE.Mesh(riverGeometry, riverMaterial) as THREE.Mesh;
     (river as any).rotation.x = -Math.PI / 2;
-    (river as any).position.z = -600; // Adjusted position
+    (river as any).position.z = -400; // Adjusted position
     river.receiveShadow = true;
     scene.add(river);
     riverRef.current = river;
@@ -782,14 +782,14 @@ const Game: React.FC = () => {
   const createOtter = () => {
     if (!sceneRef.current) return;
     const scene = sceneRef.current;
-    const otterGeometry = new THREE.CapsuleGeometry(0.8, 1.5, 4, 8); // Increased size
+    const otterGeometry = new THREE.CapsuleGeometry(1, 2, 4, 8); // Increased size for mobile
     const otterMaterial = new THREE.MeshStandardMaterial({
       color: 0x8B4513,
       roughness: 0.7,
       metalness: 0.2
     }) as unknown as THREE.MeshBasicMaterial;
     const otter = new THREE.Mesh(otterGeometry, otterMaterial) as THREE.Mesh;
-    (otter as any).position.set(0, 0.5, 0); // Raised position
+    (otter as any).position.set(0, 1, 0); // Raised position
     (otter as any).rotation.y = Math.PI;
     otter.castShadow = true;
     scene.add(otter);
