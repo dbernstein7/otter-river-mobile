@@ -94,7 +94,7 @@ const Game: React.FC = () => {
       left: 0,
       width: '100%',
       height: '100%',
-      display: 'flex',
+      display: gameStarted ? 'none' : 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
@@ -151,7 +151,7 @@ const Game: React.FC = () => {
       left: 0,
       width: '100%',
       height: '100%',
-      display: 'flex',
+      display: gameOver ? 'flex' : 'none',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
@@ -728,6 +728,7 @@ const Game: React.FC = () => {
     setLevel(1);
     setGameStarted(false);
     setGameOver(false);
+    setGameTime(0);
     obstaclesRef.current = [];
     fishRef.current = [];
     lastObstacleTimeRef.current = 0;
@@ -851,6 +852,11 @@ const Game: React.FC = () => {
     scene.add(otter);
     otterRef.current = otter;
   };
+
+  // Call resetGameState on component mount
+  useEffect(() => {
+    resetGameState();
+  }, []);
 
   return (
     <div ref={containerRef} style={{
