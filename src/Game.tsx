@@ -106,10 +106,11 @@ const Game: React.FC = () => {
       WebkitTouchCallout: 'none',
       WebkitUserSelect: 'none',
       userSelect: 'none',
-      WebkitTapHighlightColor: 'transparent'
+      WebkitTapHighlightColor: 'transparent',
+      overflow: 'hidden'
     }}>
       <h1 style={{
-        fontSize: '2.5rem',
+        fontSize: '2rem',
         color: '#fff',
         textShadow: '0 0 10px rgba(255, 255, 255, 0.5)',
         marginBottom: '2rem',
@@ -142,7 +143,9 @@ const Game: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          margin: '0 20px'
+          margin: '0 20px',
+          position: 'relative',
+          zIndex: 1001
         }}
         className="start-button"
       >
@@ -294,8 +297,8 @@ const Game: React.FC = () => {
       0.1,
       1000
     );
-    (camera as any).position.set(0, 10, 20); // Adjusted for better mobile view
-    (camera as any).lookAt(0, 0, -20);
+    (camera as any).position.set(0, 5, 10); // Much closer view for mobile
+    (camera as any).lookAt(0, 0, -10);
     cameraRef.current = camera;
     scene.add(camera);
 
@@ -305,7 +308,7 @@ const Game: React.FC = () => {
       alpha: true,
       powerPreference: 'high-performance'
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(1); // Force 1:1 pixel ratio for better performance
     renderer.setSize(window.innerWidth, window.innerHeight);
     (renderer as any).shadowMap.enabled = true;
     (renderer as any).shadowMap.type = THREE.PCFSoftShadowMap;
@@ -315,6 +318,7 @@ const Game: React.FC = () => {
     // Add touch event listeners with improved handling
     const handleTouchStart = (e: TouchEvent) => {
       e.preventDefault();
+      e.stopPropagation();
       const touch = e.touches[0];
       setTouchStart({ x: touch.clientX, y: touch.clientY });
       setTouchActive(true);
@@ -322,20 +326,22 @@ const Game: React.FC = () => {
 
     const handleTouchMove = (e: TouchEvent) => {
       e.preventDefault();
+      e.stopPropagation();
       if (!touchActive) return;
       const touch = e.touches[0];
       const deltaX = touch.clientX - touchStart.x;
       const deltaY = touch.clientY - touchStart.y;
 
       // Update key states based on touch movement with increased sensitivity
-      keysRef.current.ArrowLeft = deltaX < -10;
-      keysRef.current.ArrowRight = deltaX > 10;
-      keysRef.current.ArrowUp = deltaY < -10;
-      keysRef.current.ArrowDown = deltaY > 10;
+      keysRef.current.ArrowLeft = deltaX < -20;
+      keysRef.current.ArrowRight = deltaX > 20;
+      keysRef.current.ArrowUp = deltaY < -20;
+      keysRef.current.ArrowDown = deltaY > 20;
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
       e.preventDefault();
+      e.stopPropagation();
       setTouchActive(false);
       // Reset all movement keys
       Object.keys(keysRef.current).forEach(key => {
@@ -349,13 +355,13 @@ const Game: React.FC = () => {
     containerRef.current.addEventListener('touchend', handleTouchEnd, { passive: false });
 
     // Add lights with increased intensity for mobile
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2.0);
     (directionalLight as any).position.set(5, 15, 5);
     directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
+    directionalLight.shadow.mapSize.width = 1024;
+    directionalLight.shadow.mapSize.height = 1024;
     scene.add(directionalLight);
 
     // Create environment with adjusted scale
@@ -705,7 +711,7 @@ const Game: React.FC = () => {
   const createRiver = () => {
     if (!sceneRef.current) return;
     const scene = sceneRef.current;
-    const riverGeometry = new THREE.PlaneGeometry(40, 400, 20, 20); // Adjusted size for mobile
+    const riverGeometry = new THREE.PlaneGeometry(20, 200, 20, 20); // Much smaller for mobile
     const riverMaterial = new THREE.MeshStandardMaterial({
       color: 0x4682B4,
       roughness: 0.2,
@@ -715,7 +721,7 @@ const Game: React.FC = () => {
     }) as unknown as THREE.MeshBasicMaterial;
     const river = new THREE.Mesh(riverGeometry, riverMaterial) as THREE.Mesh;
     (river as any).rotation.x = -Math.PI / 2;
-    (river as any).position.z = -200; // Adjusted position
+    (river as any).position.z = -100; // Much closer for mobile
     river.receiveShadow = true;
     scene.add(river);
     riverRef.current = river;
@@ -724,14 +730,14 @@ const Game: React.FC = () => {
   const createOtter = () => {
     if (!sceneRef.current) return;
     const scene = sceneRef.current;
-    const otterGeometry = new THREE.CapsuleGeometry(0.5, 1, 4, 8); // Adjusted size for mobile
+    const otterGeometry = new THREE.CapsuleGeometry(0.25, 0.5, 4, 8); // Much smaller for mobile
     const otterMaterial = new THREE.MeshStandardMaterial({
       color: 0x8B4513,
       roughness: 0.7,
       metalness: 0.2
     }) as unknown as THREE.MeshBasicMaterial;
     const otter = new THREE.Mesh(otterGeometry, otterMaterial) as THREE.Mesh;
-    (otter as any).position.set(0, 0.5, 0); // Adjusted position
+    (otter as any).position.set(0, 0.25, 0); // Much lower for mobile
     (otter as any).rotation.y = Math.PI;
     otter.castShadow = true;
     scene.add(otter);
@@ -766,7 +772,7 @@ const Game: React.FC = () => {
     
     // Reset otter position
     if (otterRef.current) {
-      (otterRef.current as any).position.set(0, 0.5, 0);
+      (otterRef.current as any).position.set(0, 0.25, 0);
       (otterRef.current as any).rotation.y = Math.PI;
     }
     
