@@ -101,7 +101,8 @@ const Game: React.FC = () => {
       backgroundColor: 'rgba(0, 0, 0, 0.7)',
       backdropFilter: 'blur(10px)',
       zIndex: 1000,
-      animation: 'fadeIn 0.5s ease-out'
+      animation: 'fadeIn 0.5s ease-out',
+      touchAction: 'none'
     }}>
       <h1 style={{
         fontSize: '3rem',
@@ -122,7 +123,9 @@ const Game: React.FC = () => {
           cursor: 'pointer',
           transition: 'all 0.3s ease',
           boxShadow: '0 0 20px rgba(76, 175, 80, 0.3)',
-          animation: 'fadeIn 0.5s ease-out 0.3s both'
+          animation: 'fadeIn 0.5s ease-out 0.3s both',
+          touchAction: 'manipulation',
+          WebkitTapHighlightColor: 'transparent'
         }}
         className="start-button"
       >
@@ -136,7 +139,7 @@ const Game: React.FC = () => {
         animation: 'fadeIn 0.5s ease-out 0.6s both'
       }}>
         <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>How to Play</h2>
-        <p style={{ marginBottom: '0.5rem' }}>Use arrow keys to move the otter</p>
+        <p style={{ marginBottom: '0.5rem' }}>Swipe to move the otter</p>
         <p style={{ marginBottom: '0.5rem' }}>Collect fish to earn points</p>
         <p style={{ marginBottom: '0.5rem' }}>Avoid obstacles to stay alive</p>
         <p>Complete levels to progress!</p>
@@ -268,12 +271,12 @@ const Game: React.FC = () => {
 
     // Set up camera with adjusted position for mobile
     const camera = new THREE.PerspectiveCamera(
-      75, // Increased FOV for better mobile view
+      75,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
     );
-    (camera as any).position.set(0, 15, 25); // Adjusted position for better view
+    (camera as any).position.set(0, 15, 25);
     (camera as any).lookAt(0, 0, -50);
     cameraRef.current = camera;
     scene.add(camera);
@@ -284,34 +287,37 @@ const Game: React.FC = () => {
       alpha: true,
       powerPreference: 'high-performance'
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel ratio for performance
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
     (renderer as any).shadowMap.enabled = true;
     (renderer as any).shadowMap.type = THREE.PCFSoftShadowMap;
     rendererRef.current = renderer;
     containerRef.current.appendChild(renderer.domElement);
 
-    // Add touch event listeners
+    // Add touch event listeners with improved handling
     const handleTouchStart = (e: TouchEvent) => {
+      e.preventDefault(); // Prevent default touch behavior
       const touch = e.touches[0];
       setTouchStart({ x: touch.clientX, y: touch.clientY });
       setTouchActive(true);
     };
 
     const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault(); // Prevent default touch behavior
       if (!touchActive) return;
       const touch = e.touches[0];
       const deltaX = touch.clientX - touchStart.x;
       const deltaY = touch.clientY - touchStart.y;
 
-      // Update key states based on touch movement
-      keysRef.current.ArrowLeft = deltaX < -10;
-      keysRef.current.ArrowRight = deltaX > 10;
-      keysRef.current.ArrowUp = deltaY < -10;
-      keysRef.current.ArrowDown = deltaY > 10;
+      // Update key states based on touch movement with increased sensitivity
+      keysRef.current.ArrowLeft = deltaX < -5;
+      keysRef.current.ArrowRight = deltaX > 5;
+      keysRef.current.ArrowUp = deltaY < -5;
+      keysRef.current.ArrowDown = deltaY > 5;
     };
 
-    const handleTouchEnd = () => {
+    const handleTouchEnd = (e: TouchEvent) => {
+      e.preventDefault(); // Prevent default touch behavior
       setTouchActive(false);
       // Reset all movement keys
       Object.keys(keysRef.current).forEach(key => {
@@ -319,15 +325,16 @@ const Game: React.FC = () => {
       });
     };
 
-    containerRef.current.addEventListener('touchstart', handleTouchStart);
-    containerRef.current.addEventListener('touchmove', handleTouchMove);
-    containerRef.current.addEventListener('touchend', handleTouchEnd);
+    // Add touch event listeners with passive: false to ensure preventDefault works
+    containerRef.current.addEventListener('touchstart', handleTouchStart, { passive: false });
+    containerRef.current.addEventListener('touchmove', handleTouchMove, { passive: false });
+    containerRef.current.addEventListener('touchend', handleTouchEnd, { passive: false });
 
     // Add lights with increased intensity for mobile
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Increased ambient light
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2); // Increased directional light
-    (directionalLight as any).position.set(5, 15, 5); // Adjusted light position
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    (directionalLight as any).position.set(5, 15, 5);
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.width = 2048;
     directionalLight.shadow.mapSize.height = 2048;
@@ -360,88 +367,6 @@ const Game: React.FC = () => {
     };
     animate();
 
-    // Add CSS animations and mobile styles
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes glow {
-        from {
-          text-shadow: 0 0 10px rgba(255, 255, 255, 0.5),
-                       0 0 20px rgba(255, 255, 255, 0.3),
-                       0 0 30px rgba(255, 255, 255, 0.2);
-        }
-        to {
-          text-shadow: 0 0 20px rgba(255, 255, 255, 0.7),
-                       0 0 30px rgba(255, 255, 255, 0.5),
-                       0 0 40px rgba(255, 255, 255, 0.3);
-        }
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes borderPulse {
-        0% {
-          border-color: rgba(255, 0, 255, 0.5);
-        }
-        50% {
-          border-color: rgba(255, 0, 255, 0.8);
-        }
-        100% {
-          border-color: rgba(255, 0, 255, 0.5);
-        }
-      }
-
-      .start-button:hover {
-        transform: scale(1.05) translateY(-5px);
-        box-shadow: 0 0 30px rgba(76, 175, 80, 0.5);
-      }
-
-      /* Mobile-specific styles */
-      @media (max-width: 768px) {
-        .game-container {
-          width: 100vw;
-          height: 100vh;
-          overflow: hidden;
-          position: fixed;
-          top: 0;
-          left: 0;
-          touch-action: none;
-          -webkit-touch-callout: none;
-          -webkit-user-select: none;
-          -khtml-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-          -webkit-tap-highlight-color: transparent;
-        }
-
-        .start-button {
-          padding: 1.5rem 3rem !important;
-          font-size: 2rem !important;
-        }
-
-        h1 {
-          font-size: 4rem !important;
-        }
-
-        .game-info {
-          font-size: 1.5rem !important;
-          padding: 1rem !important;
-          background: rgba(0, 0, 0, 0.7) !important;
-          border-radius: 1rem !important;
-        }
-      }
-    `;
-    document.head.appendChild(style);
-
     // Cleanup function
     return () => {
       window.removeEventListener('resize', onWindowResize);
@@ -464,7 +389,6 @@ const Game: React.FC = () => {
           containerRef.current.removeChild(rendererRef.current.domElement);
         }
       }
-      document.head.removeChild(style);
     };
   }, []);
 
@@ -824,7 +748,7 @@ const Game: React.FC = () => {
     
     // Reset otter position
     if (otterRef.current) {
-      (otterRef.current as any).position.set(0, 0.5, 0);
+      (otterRef.current as any).position.set(0, 1, 0);
       (otterRef.current as any).rotation.y = Math.PI;
     }
     
@@ -836,6 +760,11 @@ const Game: React.FC = () => {
       setLevel(prev => prev + 1);
       baseSpeedRef.current += 0.02;
     }, 15000);
+
+    // Force a re-render
+    if (rendererRef.current && sceneRef.current && cameraRef.current) {
+      rendererRef.current.render(sceneRef.current, cameraRef.current);
+    }
   };
 
   const restartGame = () => {
