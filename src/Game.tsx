@@ -88,117 +88,168 @@ const Game: React.FC = () => {
 
   // UI overlays
   const StartScreen = () => (
-    <div className="overlay" style={{
-      display: gameStarted ? 'none' : 'flex',
+    <div style={{
       position: 'absolute',
       top: 0,
       left: 0,
       width: '100%',
       height: '100%',
-      backgroundColor: 'rgba(0, 0, 0, 0.8)',
-      color: 'white',
+      display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center',
       justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+      backdropFilter: 'blur(10px)',
       zIndex: 1000,
-      padding: '20px',
-      textAlign: 'center'
+      animation: 'fadeIn 0.5s ease-out'
     }}>
-      <h2 style={{ fontSize: '2.5em', marginBottom: '20px' }}>Otter River Adventure</h2>
+      <h1 style={{
+        fontSize: '3rem',
+        color: '#fff',
+        textShadow: '0 0 10px rgba(255, 255, 255, 0.5)',
+        marginBottom: '2rem',
+        animation: 'glow 2s infinite alternate'
+      }}>Otter Adventure</h1>
+      <button
+        onClick={startGame}
+        style={{
+          padding: '1rem 2rem',
+          fontSize: '1.5rem',
+          backgroundColor: '#4CAF50',
+          color: 'white',
+          border: 'none',
+          borderRadius: '50px',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          boxShadow: '0 0 20px rgba(76, 175, 80, 0.3)',
+          animation: 'fadeIn 0.5s ease-out 0.3s both'
+        }}
+        className="start-button"
+      >
+        Start Adventure
+      </button>
       <div style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        padding: '20px',
-        borderRadius: '10px',
-        marginBottom: '20px',
-        maxWidth: '600px'
+        marginTop: '2rem',
+        color: '#fff',
+        textAlign: 'center',
+        maxWidth: '600px',
+        animation: 'fadeIn 0.5s ease-out 0.6s both'
       }}>
-        <h3 style={{ fontSize: '1.5em', marginBottom: '10px' }}>How to Play</h3>
-        <ul style={{ textAlign: 'left', listStyleType: 'none', padding: 0 }}>
-          <li style={{ margin: '10px 0' }}>• Use WASD or Arrow Keys to move</li>
-          <li style={{ margin: '10px 0' }}>• Collect fish while avoiding obstacles</li>
-          <li style={{ margin: '10px 0' }}>• Game speeds up as you level up</li>
-          <li style={{ margin: '10px 0' }}>• Rarer fish appear at higher levels</li>
-        </ul>
-      </div>
-      <button onClick={startGame} style={{
-        padding: '15px 30px',
-        fontSize: '1.2em',
-        backgroundColor: '#4CAF50',
-        color: 'white',
-        border: 'none',
-        borderRadius: '5px',
-        cursor: 'pointer',
-        marginBottom: '20px',
-        transition: 'background-color 0.3s'
-      }}>Start Adventure</button>
-      <div style={{ maxWidth: '600px', width: '100%' }}>
-        <h3 style={{ fontSize: '1.5em', marginBottom: '10px' }}>Leaderboard</h3>
-        <ol style={{ textAlign: 'left', padding: '0 20px' }}>
-          {leaderboard.slice(0, 5).map((entry: any, idx: number) => (
-            <li key={idx} style={{ margin: '10px 0' }}>
-              {entry.name}: {entry.score} pts, Level {entry.level}, Time {entry.time}
-            </li>
-          ))}
-        </ol>
+        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>How to Play</h2>
+        <p style={{ marginBottom: '0.5rem' }}>Use arrow keys to move the otter</p>
+        <p style={{ marginBottom: '0.5rem' }}>Collect fish to earn points</p>
+        <p style={{ marginBottom: '0.5rem' }}>Avoid obstacles to stay alive</p>
+        <p>Complete levels to progress!</p>
       </div>
     </div>
   );
 
   const GameOverScreen = () => (
-    <div className="overlay" style={{
-      display: gameOver ? 'flex' : 'none',
+    <div style={{
       position: 'absolute',
       top: 0,
       left: 0,
       width: '100%',
       height: '100%',
-      backgroundColor: 'rgba(0, 0, 0, 0.8)',
-      color: 'white',
+      display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center',
       justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      backdropFilter: 'blur(10px)',
       zIndex: 1000,
-      padding: '20px',
-      textAlign: 'center'
+      animation: 'fadeIn 0.5s ease-out'
     }}>
-      <h2 style={{ fontSize: '2.5em', marginBottom: '20px' }}>Game Over</h2>
-      <div style={{ fontSize: '1.5em', marginBottom: '20px' }}>Final Score: {score}</div>
-      <input
-        type="text"
-        placeholder="Enter your name"
-        value={playerName}
-        onChange={e => setPlayerName(e.target.value)}
-        style={{
-          padding: '10px',
-          fontSize: '1.2em',
-          margin: '10px',
-          width: '200px',
-          borderRadius: '5px',
-          border: 'none'
-        }}
-      />
-      <div style={{ display: 'flex', gap: '10px' }}>
-        <button onClick={submitScore} style={{
-          padding: '10px 20px',
-          fontSize: '1.2em',
-          backgroundColor: '#4CAF50',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          transition: 'background-color 0.3s'
-        }}>Submit Score</button>
-        <button onClick={restartGame} style={{
-          padding: '10px 20px',
-          fontSize: '1.2em',
-          backgroundColor: '#2196F3',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          transition: 'background-color 0.3s'
-        }}>Play Again</button>
+      <h1 style={{
+        fontSize: '3rem',
+        color: '#fff',
+        marginBottom: '1rem',
+        animation: 'glow 2s infinite alternate'
+      }}>Game Over</h1>
+      <p style={{
+        fontSize: '1.5rem',
+        color: '#fff',
+        marginBottom: '2rem',
+        animation: 'fadeIn 0.5s ease-out 0.3s both'
+      }}>
+        Final Score: {score}
+      </p>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '1rem',
+        animation: 'fadeIn 0.5s ease-out 0.6s both'
+      }}>
+        <input
+          type="text"
+          value={playerName}
+          onChange={(e) => setPlayerName(e.target.value)}
+          placeholder="Enter your name"
+          style={{
+            padding: '0.5rem 1rem',
+            fontSize: '1.2rem',
+            borderRadius: '25px',
+            border: '2px solid rgba(255, 0, 255, 0.5)',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            color: '#fff',
+            width: '250px',
+            animation: 'borderPulse 2s infinite'
+          }}
+        />
+        <button
+          onClick={submitScore}
+          style={{
+            padding: '0.8rem 1.5rem',
+            fontSize: '1.2rem',
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '25px',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            boxShadow: '0 0 20px rgba(76, 175, 80, 0.3)'
+          }}
+          className="start-button"
+        >
+          Submit Score
+        </button>
       </div>
+      <div style={{
+        marginTop: '2rem',
+        color: '#fff',
+        textAlign: 'center',
+        animation: 'fadeIn 0.5s ease-out 0.9s both'
+      }}>
+        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Leaderboard</h2>
+        {leaderboard.map((entry, index) => (
+          <div key={index} style={{
+            marginBottom: '0.5rem',
+            fontSize: '1.2rem',
+            color: index === 0 ? '#FFD700' : '#fff'
+          }}>
+            {entry.name}: {entry.score}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const GameInfo = () => (
+    <div style={{
+      position: 'absolute',
+      top: '20px',
+      left: '20px',
+      color: '#fff',
+      fontSize: '1.2rem',
+      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+      zIndex: 100,
+      animation: 'fadeIn 0.5s ease-out'
+    }}>
+      <div style={{ marginBottom: '0.5rem' }}>Score: {score}</div>
+      <div style={{ marginBottom: '0.5rem' }}>Lives: {lives}</div>
+      <div style={{ marginBottom: '0.5rem' }}>Level: {level}</div>
+      <div>Time: {Math.floor(gameTime / 60)}:{Math.floor(gameTime % 60).toString().padStart(2, '0')}</div>
     </div>
   );
 
@@ -338,6 +389,23 @@ const Game: React.FC = () => {
     setPlayerName('');
   };
 
+  const returnToMenu = () => {
+    setGameOver(false);
+    setGameStarted(false);
+    resetGameState();
+    if (otterRef.current) {
+      (otterRef.current as any).position.set(0, 0.25, 0);
+      (otterRef.current as any).rotation.y = Math.PI;
+    }
+    if (sceneRef.current) {
+      obstaclesRef.current.forEach(obstacle => sceneRef.current!.remove(obstacle));
+      fishRef.current.forEach(fish => sceneRef.current!.remove(fish));
+      obstaclesRef.current = [];
+      fishRef.current = [];
+    }
+    return false;
+  };
+
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -395,6 +463,52 @@ const Game: React.FC = () => {
     };
     animate();
 
+    // Add CSS animations
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes glow {
+        from {
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.5),
+                       0 0 20px rgba(255, 255, 255, 0.3),
+                       0 0 30px rgba(255, 255, 255, 0.2);
+        }
+        to {
+          text-shadow: 0 0 20px rgba(255, 255, 255, 0.7),
+                       0 0 30px rgba(255, 255, 255, 0.5),
+                       0 0 40px rgba(255, 255, 255, 0.3);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes borderPulse {
+        0% {
+          border-color: rgba(255, 0, 255, 0.5);
+        }
+        50% {
+          border-color: rgba(255, 0, 255, 0.8);
+        }
+        100% {
+          border-color: rgba(255, 0, 255, 0.5);
+        }
+      }
+
+      .start-button:hover {
+        transform: scale(1.05) translateY(-5px);
+        box-shadow: 0 0 30px rgba(76, 175, 80, 0.5);
+      }
+    `;
+    document.head.appendChild(style);
+
     // Cleanup function
     return () => {
       window.removeEventListener('resize', onWindowResize);
@@ -412,6 +526,7 @@ const Game: React.FC = () => {
           containerRef.current.removeChild(rendererRef.current.domElement);
         }
       }
+      document.head.removeChild(style);
     };
   }, []);
 
@@ -747,23 +862,7 @@ const Game: React.FC = () => {
     }}>
       <StartScreen />
       <GameOverScreen />
-      {/* Game Info */}
-      <div style={{
-        position: 'absolute',
-        top: 10,
-        left: 10,
-        color: 'white',
-        zIndex: 2,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        padding: '10px',
-        borderRadius: '5px',
-        fontSize: '1.2em'
-      }}>
-        <div>Score: {score}</div>
-        <div>Lives: {lives}</div>
-        <div>Level: {level}</div>
-        <div>Time: {Math.floor(gameTime / 60)}:{Math.floor(gameTime % 60).toString().padStart(2, '0')}</div>
-      </div>
+      <GameInfo />
     </div>
   );
 };
