@@ -415,13 +415,25 @@ const Game: React.FC = () => {
     scene.fog = new THREE.Fog(0x87CEEB, 20, 100);
     sceneRef.current = scene;
 
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // Set up camera with proper mobile viewport
+    const camera = new THREE.PerspectiveCamera(
+      60,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
     (camera as any).position.set(0, 15, 20);
     (camera as any).lookAt(0, 0, -100);
     cameraRef.current = camera;
     scene.add(camera);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    // Set up renderer with proper mobile settings
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance'
+    });
+    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     (renderer as any).shadowMap.enabled = true;
     (renderer as any).shadowMap.type = THREE.PCFSoftShadowMap;
@@ -456,6 +468,8 @@ const Game: React.FC = () => {
     const animate = () => {
       if (!sceneRef.current || !cameraRef.current || !rendererRef.current) return;
       animationFrameRef.current = requestAnimationFrame(animate);
+      
+      // Always render the scene, even when game is not started
       if (gameStarted && !gameOver) {
         update();
       }
@@ -505,6 +519,18 @@ const Game: React.FC = () => {
       .start-button:hover {
         transform: scale(1.05) translateY(-5px);
         box-shadow: 0 0 30px rgba(76, 175, 80, 0.5);
+      }
+
+      /* Mobile-specific styles */
+      @media (max-width: 768px) {
+        .game-container {
+          width: 100vw;
+          height: 100vh;
+          overflow: hidden;
+          position: fixed;
+          top: 0;
+          left: 0;
+        }
       }
     `;
     document.head.appendChild(style);
@@ -705,9 +731,14 @@ const Game: React.FC = () => {
     if (!cameraRef.current || !rendererRef.current) return;
     const width = window.innerWidth;
     const height = window.innerHeight;
+    
+    // Update camera
     cameraRef.current.aspect = width / height;
     cameraRef.current.updateProjectionMatrix();
+    
+    // Update renderer
     rendererRef.current.setSize(width, height);
+    rendererRef.current.setPixelRatio(window.devicePixelRatio);
   };
 
   const onKeyDown = (event: KeyboardEvent) => {
@@ -864,8 +895,9 @@ const Game: React.FC = () => {
       height: '100%',
       position: 'relative',
       overflow: 'hidden',
-      backgroundColor: '#000'
-    }}>
+      backgroundColor: '#000',
+      touchAction: 'none'
+    }} className="game-container">
       <StartScreen />
       <GameOverScreen />
       <GameInfo />
