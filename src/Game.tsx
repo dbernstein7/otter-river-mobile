@@ -119,6 +119,8 @@ const Game: React.FC = () => {
         padding: '0 20px'
       }}>Otter Adventure</h1>
       <button
+        id="startGame"
+        name="startGame"
         onClick={startGame}
         onTouchStart={(e) => {
           e.preventDefault();
@@ -206,6 +208,8 @@ const Game: React.FC = () => {
         animation: 'fadeIn 0.5s ease-out 0.6s both'
       }}>
         <input
+          id="playerName"
+          name="playerName"
           type="text"
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
@@ -222,6 +226,8 @@ const Game: React.FC = () => {
           }}
         />
         <button
+          id="submitScore"
+          name="submitScore"
           onClick={submitScore}
           style={{
             padding: '0.8rem 1.5rem',
@@ -297,7 +303,7 @@ const Game: React.FC = () => {
       0.1,
       1000
     );
-    (camera as any).position.set(0, 5, 10); // Much closer view for mobile
+    (camera as any).position.set(0, 5, 10);
     (camera as any).lookAt(0, 0, -10);
     cameraRef.current = camera;
     scene.add(camera);
@@ -308,7 +314,7 @@ const Game: React.FC = () => {
       alpha: true,
       powerPreference: 'high-performance'
     });
-    renderer.setPixelRatio(1); // Force 1:1 pixel ratio for better performance
+    renderer.setPixelRatio(1);
     renderer.setSize(window.innerWidth, window.innerHeight);
     (renderer as any).shadowMap.enabled = true;
     (renderer as any).shadowMap.type = THREE.PCFSoftShadowMap;
