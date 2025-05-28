@@ -798,12 +798,40 @@ const Game: React.FC = () => {
 
   const startGame = () => {
     if (gameStarted) return;
-    setGameStarted(true);
+    
+    // Reset game state
+    setScore(0);
+    setLives(3);
+    setLevel(1);
+    setGameTime(0);
     setGameOver(false);
+    setGameStarted(true);
+    
+    // Reset refs
     lastObstacleTimeRef.current = Date.now();
     lastFishTimeRef.current = Date.now();
+    gameTimeRef.current = 0;
+    baseSpeedRef.current = 0.2;
+    currentObstacleIntervalRef.current = obstacleSpawnIntervalRef.current;
+    
+    // Clear any existing obstacles and fish
+    if (sceneRef.current) {
+      obstaclesRef.current.forEach(obstacle => sceneRef.current!.remove(obstacle));
+      fishRef.current.forEach(fish => sceneRef.current!.remove(fish));
+      obstaclesRef.current = [];
+      fishRef.current = [];
+    }
+    
+    // Reset otter position
+    if (otterRef.current) {
+      (otterRef.current as any).position.set(0, 0.5, 0);
+      (otterRef.current as any).rotation.y = Math.PI;
+    }
     
     // Start level progression timer
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+    }
     timerIntervalRef.current = setInterval(() => {
       setLevel(prev => prev + 1);
       baseSpeedRef.current += 0.02;
