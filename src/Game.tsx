@@ -102,7 +102,10 @@ const Game: React.FC = () => {
       backdropFilter: 'blur(10px)',
       zIndex: 1000,
       animation: 'fadeIn 0.5s ease-out',
-      touchAction: 'none'
+      touchAction: 'none',
+      WebkitTouchCallout: 'none',
+      WebkitUserSelect: 'none',
+      userSelect: 'none'
     }}>
       <h1 style={{
         fontSize: '3rem',
@@ -113,6 +116,11 @@ const Game: React.FC = () => {
       }}>Otter Adventure</h1>
       <button
         onClick={startGame}
+        onTouchStart={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          startGame();
+        }}
         style={{
           padding: '1rem 2rem',
           fontSize: '1.5rem',
@@ -125,7 +133,12 @@ const Game: React.FC = () => {
           boxShadow: '0 0 20px rgba(76, 175, 80, 0.3)',
           animation: 'fadeIn 0.5s ease-out 0.3s both',
           touchAction: 'manipulation',
-          WebkitTapHighlightColor: 'transparent'
+          WebkitTapHighlightColor: 'transparent',
+          minWidth: '200px',
+          minHeight: '60px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}
         className="start-button"
       >
@@ -136,7 +149,8 @@ const Game: React.FC = () => {
         color: '#fff',
         textAlign: 'center',
         maxWidth: '600px',
-        animation: 'fadeIn 0.5s ease-out 0.6s both'
+        animation: 'fadeIn 0.5s ease-out 0.6s both',
+        padding: '0 20px'
       }}>
         <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>How to Play</h2>
         <p style={{ marginBottom: '0.5rem' }}>Swipe to move the otter</p>
