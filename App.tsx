@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import Game from './src/Game';
 
 export default function App() {
   const [dimensions, setDimensions] = useState({
@@ -24,8 +25,7 @@ export default function App() {
       <Text style={styles.title}>Otter River Adventure</Text>
       <Text style={styles.subtitle}>Mobile Version</Text>
       <View style={styles.gameContainer}>
-        {/* Game canvas will go here */}
-        <Text style={styles.placeholder}>Game Canvas</Text>
+        <Game />
       </View>
       <StatusBar style="auto" />
     </View>
@@ -55,9 +55,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  placeholder: {
-    fontSize: 16,
-    color: '#999',
   },
 }); 
