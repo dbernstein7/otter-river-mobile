@@ -87,40 +87,117 @@ const Game: React.FC = () => {
 
   // UI overlays
   const StartScreen = () => (
-    <div className="overlay" style={{ display: gameStarted ? 'none' : 'flex' }}>
-      <h2>Otter River Adventure</h2>
-      <div className="rules-container">
-        <h3>How to Play</h3>
-        <ul>
-          <li>Use WASD or Arrow Keys to move</li>
-          <li>Collect fish while avoiding obstacles</li>
-          <li>Game speeds up as you level up</li>
-          <li>Rarer fish appear at higher levels</li>
+    <div className="overlay" style={{
+      display: gameStarted ? 'none' : 'flex',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      color: 'white',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000,
+      padding: '20px',
+      textAlign: 'center'
+    }}>
+      <h2 style={{ fontSize: '2.5em', marginBottom: '20px' }}>Otter River Adventure</h2>
+      <div style={{
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        padding: '20px',
+        borderRadius: '10px',
+        marginBottom: '20px',
+        maxWidth: '600px'
+      }}>
+        <h3 style={{ fontSize: '1.5em', marginBottom: '10px' }}>How to Play</h3>
+        <ul style={{ textAlign: 'left', listStyleType: 'none', padding: 0 }}>
+          <li style={{ margin: '10px 0' }}>• Use WASD or Arrow Keys to move</li>
+          <li style={{ margin: '10px 0' }}>• Collect fish while avoiding obstacles</li>
+          <li style={{ margin: '10px 0' }}>• Game speeds up as you level up</li>
+          <li style={{ margin: '10px 0' }}>• Rarer fish appear at higher levels</li>
         </ul>
       </div>
-      <button onClick={startGame}>Start Game</button>
-      <h3>Leaderboard</h3>
-      <ol>
-        {leaderboard.slice(0, 5).map((entry: any, idx: number) => (
-          <li key={idx}>{entry.name}: {entry.score} pts, Level {entry.level}, Time {entry.time}</li>
-        ))}
-      </ol>
+      <button onClick={startGame} style={{
+        padding: '15px 30px',
+        fontSize: '1.2em',
+        backgroundColor: '#4CAF50',
+        color: 'white',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        marginBottom: '20px',
+        transition: 'background-color 0.3s'
+      }}>Start Adventure</button>
+      <div style={{ maxWidth: '600px', width: '100%' }}>
+        <h3 style={{ fontSize: '1.5em', marginBottom: '10px' }}>Leaderboard</h3>
+        <ol style={{ textAlign: 'left', padding: '0 20px' }}>
+          {leaderboard.slice(0, 5).map((entry: any, idx: number) => (
+            <li key={idx} style={{ margin: '10px 0' }}>
+              {entry.name}: {entry.score} pts, Level {entry.level}, Time {entry.time}
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   );
 
   const GameOverScreen = () => (
-    <div className="overlay" style={{ display: gameOver ? 'flex' : 'none' }}>
-      <h2>Game Over</h2>
-      <div>Final Score: {score}</div>
+    <div className="overlay" style={{
+      display: gameOver ? 'flex' : 'none',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      color: 'white',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000,
+      padding: '20px',
+      textAlign: 'center'
+    }}>
+      <h2 style={{ fontSize: '2.5em', marginBottom: '20px' }}>Game Over</h2>
+      <div style={{ fontSize: '1.5em', marginBottom: '20px' }}>Final Score: {score}</div>
       <input
         type="text"
         placeholder="Enter your name"
         value={playerName}
         onChange={e => setPlayerName(e.target.value)}
-        style={{ margin: '10px' }}
+        style={{
+          padding: '10px',
+          fontSize: '1.2em',
+          margin: '10px',
+          width: '200px',
+          borderRadius: '5px',
+          border: 'none'
+        }}
       />
-      <button onClick={submitScore}>Submit Score</button>
-      <button onClick={restartGame}>Play Again</button>
+      <div style={{ display: 'flex', gap: '10px' }}>
+        <button onClick={submitScore} style={{
+          padding: '10px 20px',
+          fontSize: '1.2em',
+          backgroundColor: '#4CAF50',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          transition: 'background-color 0.3s'
+        }}>Submit Score</button>
+        <button onClick={restartGame} style={{
+          padding: '10px 20px',
+          fontSize: '1.2em',
+          backgroundColor: '#2196F3',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          transition: 'background-color 0.3s'
+        }}>Play Again</button>
+      </div>
     </div>
   );
 
@@ -222,6 +299,70 @@ const Game: React.FC = () => {
       setLevel(prev => prev + 1);
       baseSpeedRef.current += 0.02;
     }, 15000);
+
+    // Start animation loop if not already running
+    if (!sceneRef.current || !cameraRef.current || !rendererRef.current) {
+      const init = async () => {
+        try {
+          // Create game container
+          const gameContainer = document.createElement('div');
+          gameContainer.id = 'game-container';
+          gameContainer.style.width = '100%';
+          gameContainer.style.height = '100%';
+          containerRef.current!.appendChild(gameContainer);
+
+          // Initialize Three.js scene
+          const scene = new THREE.Scene();
+          scene.background = new THREE.Color(0x87CEEB);
+          scene.fog = new THREE.Fog(0x87CEEB, 20, 100);
+          sceneRef.current = scene;
+
+          const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+          (camera as any).position.set(0, 15, 20);
+          (camera as any).lookAt(0, 0, -100);
+          cameraRef.current = camera;
+          scene.add(camera);
+
+          const renderer = new THREE.WebGLRenderer({ antialias: true });
+          renderer.setSize(window.innerWidth, window.innerHeight);
+          (renderer as any).shadowMap.enabled = true;
+          (renderer as any).shadowMap.type = THREE.PCFSoftShadowMap;
+          rendererRef.current = renderer;
+          gameContainer.appendChild(renderer.domElement);
+
+          // Add lights
+          const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+          scene.add(ambientLight);
+          const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+          (directionalLight as any).position.set(5, 5, 5);
+          directionalLight.castShadow = true;
+          directionalLight.shadow.mapSize.width = 2048;
+          directionalLight.shadow.mapSize.height = 2048;
+          scene.add(directionalLight);
+
+          // Create environment
+          createEnvironment();
+
+          // Create river
+          createRiver();
+
+          // Create otter
+          createOtter();
+
+          // Add event listeners
+          window.addEventListener('resize', onWindowResize);
+          window.addEventListener('keydown', onKeyDown);
+          window.addEventListener('keyup', onKeyUp);
+
+          // Start animation loop
+          animate();
+        } catch (error) {
+          console.error('Error initializing game:', error);
+        }
+      };
+
+      init();
+    }
   };
 
   const restartGame = () => {
@@ -677,11 +818,27 @@ const Game: React.FC = () => {
   };
 
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
+    <div ref={containerRef} style={{
+      width: '100%',
+      height: '100%',
+      position: 'relative',
+      overflow: 'hidden',
+      backgroundColor: '#000'
+    }}>
       <StartScreen />
       <GameOverScreen />
       {/* Game Info */}
-      <div style={{ position: 'absolute', top: 10, left: 10, color: '#222', zIndex: 2 }}>
+      <div style={{
+        position: 'absolute',
+        top: 10,
+        left: 10,
+        color: 'white',
+        zIndex: 2,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        padding: '10px',
+        borderRadius: '5px',
+        fontSize: '1.2em'
+      }}>
         <div>Score: {score}</div>
         <div>Lives: {lives}</div>
         <div>Level: {level}</div>
