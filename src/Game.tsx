@@ -296,25 +296,25 @@ const Game: React.FC = () => {
     scene.fog = new THREE.Fog(0x87CEEB, 20, 100);
     sceneRef.current = scene;
 
-    // Set up camera with adjusted position for mobile
+    // Set up camera with original positioning but adjusted for mobile
     const camera = new THREE.PerspectiveCamera(
-      75,
+      60, // Reduced FOV for better mobile view
       window.innerWidth / window.innerHeight,
       0.1,
       1000
     );
-    (camera as any).position.set(0, 5, 10);
+    (camera as any).position.set(0, 8, 15); // Adjusted height and distance
     (camera as any).lookAt(0, 0, -10);
     cameraRef.current = camera;
     scene.add(camera);
 
-    // Set up renderer with proper mobile settings
+    // Set up renderer with mobile optimizations
     const renderer = new THREE.WebGLRenderer({ 
       antialias: true,
       alpha: true,
       powerPreference: 'high-performance'
     });
-    renderer.setPixelRatio(1);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel ratio for better performance
     renderer.setSize(window.innerWidth, window.innerHeight);
     (renderer as any).shadowMap.enabled = true;
     (renderer as any).shadowMap.type = THREE.PCFSoftShadowMap;
@@ -339,10 +339,10 @@ const Game: React.FC = () => {
       const deltaY = touch.clientY - touchStart.y;
 
       // Update key states based on touch movement with increased sensitivity
-      keysRef.current.ArrowLeft = deltaX < -20;
-      keysRef.current.ArrowRight = deltaX > 20;
-      keysRef.current.ArrowUp = deltaY < -20;
-      keysRef.current.ArrowDown = deltaY > 20;
+      keysRef.current.ArrowLeft = deltaX < -10; // Reduced threshold for better responsiveness
+      keysRef.current.ArrowRight = deltaX > 10;
+      keysRef.current.ArrowUp = deltaY < -10;
+      keysRef.current.ArrowDown = deltaY > 10;
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
@@ -360,10 +360,10 @@ const Game: React.FC = () => {
     containerRef.current.addEventListener('touchmove', handleTouchMove, { passive: false });
     containerRef.current.addEventListener('touchend', handleTouchEnd, { passive: false });
 
-    // Add lights with increased intensity for mobile
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+    // Add lights with increased intensity for better visibility
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 2.0);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
     (directionalLight as any).position.set(5, 15, 5);
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.width = 1024;
@@ -717,7 +717,7 @@ const Game: React.FC = () => {
   const createRiver = () => {
     if (!sceneRef.current) return;
     const scene = sceneRef.current;
-    const riverGeometry = new THREE.PlaneGeometry(20, 200, 20, 20); // Much smaller for mobile
+    const riverGeometry = new THREE.PlaneGeometry(40, 200, 20, 20); // Increased width for better visibility
     const riverMaterial = new THREE.MeshStandardMaterial({
       color: 0x4682B4,
       roughness: 0.2,
@@ -727,7 +727,7 @@ const Game: React.FC = () => {
     }) as unknown as THREE.MeshBasicMaterial;
     const river = new THREE.Mesh(riverGeometry, riverMaterial) as THREE.Mesh;
     (river as any).rotation.x = -Math.PI / 2;
-    (river as any).position.z = -100; // Much closer for mobile
+    (river as any).position.z = -100;
     river.receiveShadow = true;
     scene.add(river);
     riverRef.current = river;
@@ -736,14 +736,14 @@ const Game: React.FC = () => {
   const createOtter = () => {
     if (!sceneRef.current) return;
     const scene = sceneRef.current;
-    const otterGeometry = new THREE.CapsuleGeometry(0.25, 0.5, 4, 8); // Much smaller for mobile
+    const otterGeometry = new THREE.CapsuleGeometry(0.5, 1, 4, 8); // Increased size for better visibility
     const otterMaterial = new THREE.MeshStandardMaterial({
       color: 0x8B4513,
       roughness: 0.7,
       metalness: 0.2
     }) as unknown as THREE.MeshBasicMaterial;
     const otter = new THREE.Mesh(otterGeometry, otterMaterial) as THREE.Mesh;
-    (otter as any).position.set(0, 0.25, 0); // Much lower for mobile
+    (otter as any).position.set(0, 0.5, 0); // Adjusted height
     (otter as any).rotation.y = Math.PI;
     otter.castShadow = true;
     scene.add(otter);
@@ -778,7 +778,7 @@ const Game: React.FC = () => {
     
     // Reset otter position
     if (otterRef.current) {
-      (otterRef.current as any).position.set(0, 0.25, 0);
+      (otterRef.current as any).position.set(0, 0.5, 0);
       (otterRef.current as any).rotation.y = Math.PI;
     }
     
@@ -838,7 +838,7 @@ const Game: React.FC = () => {
     setGameStarted(false);
     resetGameState();
     if (otterRef.current) {
-      (otterRef.current as any).position.set(0, 0.25, 0);
+      (otterRef.current as any).position.set(0, 0.5, 0);
       (otterRef.current as any).rotation.y = Math.PI;
     }
     if (sceneRef.current) {
@@ -875,7 +875,7 @@ const Game: React.FC = () => {
       }) as unknown as THREE.MeshBasicMaterial
     ) as THREE.Mesh;
     
-    (obstacle as any).position.x = (Math.random() - 0.5) * 40;
+    (obstacle as any).position.x = (Math.random() - 0.5) * 35; // Adjusted spawn range
     (obstacle as any).position.y = 0.5;
     (obstacle as any).position.z = -60;
     
@@ -884,9 +884,9 @@ const Game: React.FC = () => {
     (obstacle as any).rotation.z = Math.random() * Math.PI;
     
     (obstacle as any).scale.set(
-      obstacleProperties.scale,
-      obstacleProperties.scale,
-      obstacleProperties.scale
+      obstacleProperties.scale * 1.5, // Increased size for better visibility
+      obstacleProperties.scale * 1.5,
+      obstacleProperties.scale * 1.5
     );
     
     obstacle.castShadow = true;
@@ -920,14 +920,14 @@ const Game: React.FC = () => {
       }) as unknown as THREE.MeshBasicMaterial
     ) as THREE.Mesh;
 
-    (fish as any).position.x = (Math.random() - 0.5) * 40;
+    (fish as any).position.x = (Math.random() - 0.5) * 35; // Adjusted spawn range
     (fish as any).position.y = 0.5;
     (fish as any).position.z = -60;
     (fish as any).rotation.y = Math.PI / 2;
     (fish as any).scale.set(
-      fishProperties.scale,
-      fishProperties.scale,
-      fishProperties.scale
+      fishProperties.scale * 1.5, // Increased size for better visibility
+      fishProperties.scale * 1.5,
+      fishProperties.scale * 1.5
     );
     fish.castShadow = true;
     fish.userData = { type: selectedType, points: fishProperties.points };
