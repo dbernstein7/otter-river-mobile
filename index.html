@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otter River Adventure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #4a4a4a);
+        }
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        #start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+        #game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+        .game-title {
+            font-size: 5em;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+            letter-spacing: 2px;
+        }
+        .start-button {
+            padding: 20px 40px;
+            font-size: 1.8em;
+            font-weight: 600;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .start-button:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.5);
+        }
+        .game-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 1.4em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+        .game-info div {
+            margin: 5px 0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .rules-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 20px;
+            max-width: 600px;
+            text-align: left;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        .rules-title {
+            color: #4CAF50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .rules-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .rules-list li {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+        }
+        .rules-list li:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(10px);
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.2);
+        }
+        .rules-list li::before {
+            content: '→';
+            margin-right: 10px;
+            color: #4CAF50;
+        }
+        .leaderboard {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 20px;
+            min-width: 300px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        .leaderboard-title {
+            color: #4CAF50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .leaderboard-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .leaderboard-list li {
+            margin: 10px 0;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+        .leaderboard-list li:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(76, 175, 80, 0.8),
+                            0 0 30px rgba(76, 175, 80, 0.6);
+            }
+        }
+        .controls-info {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        .controls-info p {
+            margin: 5px 0;
+            padding: 5px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        #name-input {
+            display: none;
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        #name-input input {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 25px;
+            margin-right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 200px;
+        }
+        #name-input input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        #name-input button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #name-input button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+        }
+    </style>
+  <script type="module" crossorigin src="/assets/index-BJ808Ygp.js"></script>
+</head>
+<body>
+    <div id="game-container">
+        <!-- Game Canvas will be inserted here -->
+        
+        <!-- Game Info -->
+        <div class="game-info">
+            <div id="score">Score: 0</div>
+            <div id="lives">Lives: 3</div>
+            <div id="level">Level: 1</div>
+            <div id="timer">Time: 0:00</div>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen">
+            <h1 class="game-title">Otter River Adventure</h1>
+            <div class="rules-container">
+                <h2 class="rules-title">How to Play</h2>
+                <ul class="rules-list">
+                    <li>Use arrow keys or WASD to move the otter</li>
+                    <li>Collect fish to earn points</li>
+                    <li>Avoid obstacles to keep your lives</li>
+                    <li>Game gets faster as you level up</li>
+                </ul>
+            </div>
+            <div class="leaderboard">
+                <h2 class="leaderboard-title">Top Scores</h2>
+                <ul id="start-scores" class="leaderboard-list"></ul>
+            </div>
+            <button class="start-button" onclick="startGame()">Start Game</button>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over">
+            <h1 class="game-title">Game Over</h1>
+            <div id="final-score">Final Score: 0</div>
+            <div id="name-input" style="display: none;">
+                <input type="text" id="player-name" placeholder="Enter your name" maxlength="20">
+                <button class="start-button" onclick="submitScore()">Submit Score</button>
+            </div>
+            <div class="leaderboard">
+                <h2 class="leaderboard-title">Top Scores</h2>
+                <ul id="top-scores" class="leaderboard-list"></ul>
+            </div>
+            <button class="start-button" onclick="restartGame()">Play Again</button>
+        </div>
+
+        <!-- Controls Info -->
+        <div class="controls-info">
+            <p>↑ or W: Move Up</p>
+            <p>↓ or S: Move Down</p>
+            <p>← or A: Move Left</p>
+            <p>→ or D: Move Right</p>
+        </div>
+    </div>
+
+</body>
+</html> 
