@@ -25,15 +25,71 @@ const FISH_TYPES = {
     scale: 1,
     speed: 1,
     points: 1,
-    probability: 0.7
+    probability: 0.4
   },
-  rare: {
+  rainbow: {
     geometry: new THREE.ConeGeometry(0.5, 2, 8),
     color: 0xFF69B4,
     scale: 1.2,
     speed: 1.2,
     points: 3,
-    probability: 0.3
+    probability: 0.2
+  },
+  golden: {
+    geometry: new THREE.ConeGeometry(0.5, 2, 8),
+    color: 0xFFD700,
+    scale: 1.3,
+    speed: 1.3,
+    points: 5,
+    probability: 0.15
+  },
+  emerald: {
+    geometry: new THREE.ConeGeometry(0.5, 2, 8),
+    color: 0x00FF00,
+    scale: 1.4,
+    speed: 1.4,
+    points: 7,
+    probability: 0.1
+  },
+  diamond: {
+    geometry: new THREE.ConeGeometry(0.5, 2, 8),
+    color: 0x00FFFF,
+    scale: 1.5,
+    speed: 1.5,
+    points: 10,
+    probability: 0.05
+  },
+  clam: {
+    geometry: new THREE.SphereGeometry(0.5, 16, 16),
+    color: 0xFFFFFF,
+    scale: 1.2,
+    speed: 0.8,
+    points: 15,
+    probability: 0.03
+  },
+  seahorse: {
+    geometry: new THREE.ConeGeometry(0.5, 2, 8),
+    color: 0xFFA500,
+    scale: 1.3,
+    speed: 1.1,
+    points: 8,
+    probability: 0.04
+  },
+  jellyfish: {
+    geometry: new THREE.SphereGeometry(0.5, 16, 16),
+    color: 0xFF00FF,
+    scale: 1.4,
+    speed: 1.2,
+    points: 12,
+    probability: 0.02
+  },
+  starfish: {
+    geometry: new THREE.ConeGeometry(0.5, 2, 8),
+    color: 0xFFFF00,
+    scale: 1.2,
+    speed: 1.0,
+    points: 6,
+    probability: 0.01
   }
 };
 
@@ -100,15 +156,50 @@ const Game: React.FC = () => {
       alignItems: 'center',
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
       zIndex: 1000,
-      fontFamily: 'Arial, sans-serif'
+      fontFamily: 'Arial, sans-serif',
+      color: '#fff',
+      textAlign: 'center'
     }}>
       <h1 style={{
-        fontSize: '4rem',
-        color: '#fff',
-        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+        fontSize: '3.5rem',
         marginBottom: '2rem',
-        fontWeight: 'bold'
+        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
       }}>Otter River Adventure</h1>
+
+      <div style={{
+        maxWidth: '600px',
+        marginBottom: '2rem',
+        fontSize: '1.2rem',
+        lineHeight: '1.6'
+      }}>
+        <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>How to Play</h2>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          <li style={{ marginBottom: '0.5rem' }}>🎮 Use <strong>WASD</strong> or <strong>Arrow Keys</strong> to move</li>
+          <li style={{ marginBottom: '0.5rem' }}>🎯 Collect fish and clams while avoiding obstacles</li>
+          <li style={{ marginBottom: '0.5rem' }}>⚡ Game speeds up as you level up</li>
+          <li style={{ marginBottom: '0.5rem' }}>✨ Rarer fish appear at higher levels</li>
+        </ul>
+      </div>
+
+      <div style={{
+        marginBottom: '2rem',
+        fontSize: '1.2rem',
+        lineHeight: '1.6'
+      }}>
+        <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>Point Distribution</h2>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          <li style={{ marginBottom: '0.5rem' }}>🐟 Normal Fish: 1 point</li>
+          <li style={{ marginBottom: '0.5rem' }}>🌈 Rainbow Fish: 3 points</li>
+          <li style={{ marginBottom: '0.5rem' }}>🌟 Golden Fish: 5 points</li>
+          <li style={{ marginBottom: '0.5rem' }}>💎 Emerald Fish: 7 points</li>
+          <li style={{ marginBottom: '0.5rem' }}>💠 Diamond Fish: 10 points</li>
+          <li style={{ marginBottom: '0.5rem' }}>🦪 Clam: 15 points</li>
+          <li style={{ marginBottom: '0.5rem' }}>🐠 Seahorse: 8 points</li>
+          <li style={{ marginBottom: '0.5rem' }}>🐙 Jellyfish: 12 points</li>
+          <li style={{ marginBottom: '0.5rem' }}>⭐ Starfish: 6 points</li>
+        </ul>
+      </div>
+
       <button
         onClick={startGame}
         style={{
@@ -127,18 +218,8 @@ const Game: React.FC = () => {
         onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#45a049'}
         onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4CAF50'}
       >
-        Start Game
+        Start Adventure!
       </button>
-      <div style={{
-        marginTop: '2rem',
-        color: '#fff',
-        textAlign: 'center',
-        fontSize: '1.2rem',
-        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)'
-      }}>
-        <p>Use arrow keys or WASD to move</p>
-        <p>Collect fish and avoid obstacles!</p>
-      </div>
     </div>
   );
 
@@ -155,23 +236,24 @@ const Game: React.FC = () => {
       alignItems: 'center',
       backgroundColor: 'rgba(0, 0, 0, 0.7)',
       zIndex: 1000,
-      fontFamily: 'Arial, sans-serif'
+      fontFamily: 'Arial, sans-serif',
+      color: '#fff',
+      textAlign: 'center'
     }}>
       <h1 style={{
-        fontSize: '4rem',
-        color: '#fff',
-        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-        marginBottom: '1rem',
-        fontWeight: 'bold'
-      }}>Game Over</h1>
+        fontSize: '3.5rem',
+        marginBottom: '2rem',
+        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
+      }}>Game Over!</h1>
+
       <p style={{
         fontSize: '2rem',
-        color: '#fff',
         marginBottom: '2rem',
         textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)'
       }}>
-        Score: {score}
+        Final Score: {score}
       </p>
+
       <div style={{
         display: 'flex',
         gap: '1rem',
@@ -209,16 +291,15 @@ const Game: React.FC = () => {
           Submit Score
         </button>
       </div>
+
       <div style={{
-        marginTop: '2rem',
-        color: '#fff',
-        textAlign: 'center'
+        marginBottom: '2rem'
       }}>
         <h2 style={{
           fontSize: '2rem',
           marginBottom: '1rem',
           textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)'
-        }}>Leaderboard</h2>
+        }}>Top Scores</h2>
         {leaderboard.map((entry, index) => (
           <div key={index} style={{
             fontSize: '1.2rem',
@@ -229,10 +310,10 @@ const Game: React.FC = () => {
           </div>
         ))}
       </div>
+
       <button
         onClick={restartGame}
         style={{
-          marginTop: '2rem',
           padding: '1rem 2rem',
           fontSize: '1.5rem',
           backgroundColor: '#4CAF50',
@@ -263,7 +344,10 @@ const Game: React.FC = () => {
       textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
       zIndex: 100,
       fontFamily: 'Arial, sans-serif',
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      padding: '1rem',
+      borderRadius: '5px'
     }}>
       <div style={{ marginBottom: '0.5rem' }}>Score: {score}</div>
       <div style={{ marginBottom: '0.5rem' }}>Lives: {lives}</div>
