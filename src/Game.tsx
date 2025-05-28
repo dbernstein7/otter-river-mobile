@@ -253,158 +253,9 @@ const Game: React.FC = () => {
     </div>
   );
 
-  // Game functions
-  const createObstacle = () => {
-    if (!gameStarted || gameOver || !sceneRef.current) return;
-
-    const random = Math.random();
-    let cumulativeProbability = 0;
-    let selectedType = 'rock';
-
-    for (const [type, properties] of Object.entries(OBSTACLE_TYPES)) {
-      cumulativeProbability += properties.probability;
-      if (random <= cumulativeProbability) {
-        selectedType = type;
-        break;
-      }
-    }
-
-    const obstacleProperties = OBSTACLE_TYPES[selectedType];
-    const obstacle = new THREE.Mesh(
-      obstacleProperties.geometry,
-      new THREE.MeshStandardMaterial({
-        color: obstacleProperties.color,
-        roughness: 0.8,
-        metalness: 0.2
-      }) as unknown as THREE.MeshBasicMaterial
-    ) as THREE.Mesh;
-    
-    (obstacle as any).position.x = (Math.random() - 0.5) * 40;
-    (obstacle as any).position.y = 0.5;
-    (obstacle as any).position.z = -60;
-    
-    (obstacle as any).rotation.x = Math.random() * Math.PI;
-    (obstacle as any).rotation.y = Math.random() * Math.PI;
-    (obstacle as any).rotation.z = Math.random() * Math.PI;
-    
-    (obstacle as any).scale.set(
-      obstacleProperties.scale,
-      obstacleProperties.scale,
-      obstacleProperties.scale
-    );
-    
-    obstacle.castShadow = true;
-    obstacle.userData = { type: 'obstacle', obstacleType: selectedType };
-    sceneRef.current.add(obstacle);
-    obstaclesRef.current.push(obstacle);
-  };
-
-  const createFish = () => {
-    if (!gameStarted || gameOver || !sceneRef.current) return;
-
-    const random = Math.random();
-    let cumulativeProbability = 0;
-    let selectedType = 'normal';
-
-    for (const [type, properties] of Object.entries(FISH_TYPES)) {
-      cumulativeProbability += properties.probability;
-      if (random <= cumulativeProbability) {
-        selectedType = type;
-        break;
-      }
-    }
-
-    const fishProperties = FISH_TYPES[selectedType];
-    const fish = new THREE.Mesh(
-      fishProperties.geometry,
-      new THREE.MeshStandardMaterial({
-        color: fishProperties.color,
-        roughness: 0.3,
-        metalness: 0.8
-      }) as unknown as THREE.MeshBasicMaterial
-    ) as THREE.Mesh;
-
-    (fish as any).position.x = (Math.random() - 0.5) * 40;
-    (fish as any).position.y = 0.5;
-    (fish as any).position.z = -60;
-    (fish as any).rotation.y = Math.PI / 2;
-    (fish as any).scale.set(
-      fishProperties.scale,
-      fishProperties.scale,
-      fishProperties.scale
-    );
-    fish.castShadow = true;
-    fish.userData = { type: selectedType, points: fishProperties.points };
-    sceneRef.current.add(fish);
-    fishRef.current.push(fish);
-  };
-
-  const startGame = () => {
-    if (gameStarted) return;
-    setGameStarted(true);
-    setGameOver(false);
-    lastObstacleTimeRef.current = Date.now();
-    lastFishTimeRef.current = Date.now();
-    
-    // Start level progression timer
-    timerIntervalRef.current = setInterval(() => {
-      setLevel(prev => prev + 1);
-      baseSpeedRef.current += 0.02;
-    }, 15000);
-  };
-
-  const restartGame = () => {
-    // Clear existing game elements
-    if (sceneRef.current) {
-      obstaclesRef.current.forEach(obstacle => sceneRef.current!.remove(obstacle));
-      fishRef.current.forEach(fish => sceneRef.current!.remove(fish));
-    }
-    
-    // Clear timer
-    if (timerIntervalRef.current) {
-      clearInterval(timerIntervalRef.current);
-    }
-    
-    // Reset game state
-    resetGameState();
-    setGameOver(false);
-    startGame();
-  };
-
-  const submitScore = () => {
-    const name = playerName.trim() || 'Anonymous';
-    const newScore = {
-      name,
-      score,
-      level,
-      time: Math.round(gameTime)
-    };
-    
-    const updatedLeaderboard = [...leaderboard, newScore]
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 10);
-    
-    setLeaderboard(updatedLeaderboard);
-    localStorage.setItem('otterRiverLeaderboard', JSON.stringify(updatedLeaderboard));
-    setPlayerName('');
-  };
-
-  const returnToMenu = () => {
-    setGameOver(false);
-    setGameStarted(false);
-    resetGameState();
-    if (otterRef.current) {
-      (otterRef.current as any).position.set(0, 0.25, 0);
-      (otterRef.current as any).rotation.y = Math.PI;
-    }
-    if (sceneRef.current) {
-      obstaclesRef.current.forEach(obstacle => sceneRef.current!.remove(obstacle));
-      fishRef.current.forEach(fish => sceneRef.current!.remove(fish));
-      obstaclesRef.current = [];
-      fishRef.current = [];
-    }
-    return false;
-  };
+  // Add touch controls state
+  const [touchStart, setTouchStart] = useState({ x: 0, y: 0 });
+  const [touchActive, setTouchActive] = useState(false);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -415,14 +266,14 @@ const Game: React.FC = () => {
     scene.fog = new THREE.Fog(0x87CEEB, 20, 100);
     sceneRef.current = scene;
 
-    // Set up camera with proper mobile viewport
+    // Set up camera with adjusted position for mobile
     const camera = new THREE.PerspectiveCamera(
-      60,
+      75, // Increased FOV for better mobile view
       window.innerWidth / window.innerHeight,
       0.1,
       1000
     );
-    (camera as any).position.set(0, 15, 20);
+    (camera as any).position.set(0, 20, 30); // Adjusted position for better view
     (camera as any).lookAt(0, 0, -100);
     cameraRef.current = camera;
     scene.add(camera);
@@ -433,30 +284,62 @@ const Game: React.FC = () => {
       alpha: true,
       powerPreference: 'high-performance'
     });
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel ratio for performance
     renderer.setSize(window.innerWidth, window.innerHeight);
     (renderer as any).shadowMap.enabled = true;
     (renderer as any).shadowMap.type = THREE.PCFSoftShadowMap;
     rendererRef.current = renderer;
     containerRef.current.appendChild(renderer.domElement);
 
+    // Add touch event listeners
+    const handleTouchStart = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      setTouchStart({ x: touch.clientX, y: touch.clientY });
+      setTouchActive(true);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!touchActive) return;
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - touchStart.x;
+      const deltaY = touch.clientY - touchStart.y;
+
+      // Update key states based on touch movement
+      keysRef.current.ArrowLeft = deltaX < -10;
+      keysRef.current.ArrowRight = deltaX > 10;
+      keysRef.current.ArrowUp = deltaY < -10;
+      keysRef.current.ArrowDown = deltaY > 10;
+    };
+
+    const handleTouchEnd = () => {
+      setTouchActive(false);
+      // Reset all movement keys
+      Object.keys(keysRef.current).forEach(key => {
+        keysRef.current[key as keyof typeof keysRef.current] = false;
+      });
+    };
+
+    containerRef.current.addEventListener('touchstart', handleTouchStart);
+    containerRef.current.addEventListener('touchmove', handleTouchMove);
+    containerRef.current.addEventListener('touchend', handleTouchEnd);
+
     // Add lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); // Increased ambient light
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    (directionalLight as any).position.set(5, 5, 5);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0); // Increased directional light
+    (directionalLight as any).position.set(5, 10, 5); // Adjusted light position
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.width = 2048;
     directionalLight.shadow.mapSize.height = 2048;
     scene.add(directionalLight);
 
-    // Create environment
+    // Create environment with adjusted scale
     createEnvironment();
 
-    // Create river
+    // Create river with adjusted scale
     createRiver();
 
-    // Create otter
+    // Create otter with adjusted scale
     createOtter();
 
     // Add event listeners
@@ -477,7 +360,7 @@ const Game: React.FC = () => {
     };
     animate();
 
-    // Add CSS animations
+    // Add CSS animations and mobile styles
     const style = document.createElement('style');
     style.textContent = `
       @keyframes glow {
@@ -530,6 +413,30 @@ const Game: React.FC = () => {
           position: fixed;
           top: 0;
           left: 0;
+          touch-action: none;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        .start-button {
+          padding: 1.5rem 3rem !important;
+          font-size: 2rem !important;
+        }
+
+        h1 {
+          font-size: 4rem !important;
+        }
+
+        .game-info {
+          font-size: 1.5rem !important;
+          padding: 1rem !important;
+          background: rgba(0, 0, 0, 0.7) !important;
+          border-radius: 1rem !important;
         }
       }
     `;
@@ -540,6 +447,11 @@ const Game: React.FC = () => {
       window.removeEventListener('resize', onWindowResize);
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);
+      if (containerRef.current) {
+        containerRef.current.removeEventListener('touchstart', handleTouchStart);
+        containerRef.current.removeEventListener('touchmove', handleTouchMove);
+        containerRef.current.removeEventListener('touchend', handleTouchEnd);
+      }
       if (timerIntervalRef.current) {
         clearInterval(timerIntervalRef.current);
       }
@@ -851,7 +763,7 @@ const Game: React.FC = () => {
   const createRiver = () => {
     if (!sceneRef.current) return;
     const scene = sceneRef.current;
-    const riverGeometry = new THREE.PlaneGeometry(100, 1000, 20, 20);
+    const riverGeometry = new THREE.PlaneGeometry(120, 1200, 20, 20); // Increased size
     const riverMaterial = new THREE.MeshStandardMaterial({
       color: 0x4682B4,
       roughness: 0.2,
@@ -861,7 +773,7 @@ const Game: React.FC = () => {
     }) as unknown as THREE.MeshBasicMaterial;
     const river = new THREE.Mesh(riverGeometry, riverMaterial) as THREE.Mesh;
     (river as any).rotation.x = -Math.PI / 2;
-    (river as any).position.z = -500;
+    (river as any).position.z = -600; // Adjusted position
     river.receiveShadow = true;
     scene.add(river);
     riverRef.current = river;
@@ -870,24 +782,171 @@ const Game: React.FC = () => {
   const createOtter = () => {
     if (!sceneRef.current) return;
     const scene = sceneRef.current;
-    const otterGeometry = new THREE.CapsuleGeometry(0.5, 1, 4, 8);
+    const otterGeometry = new THREE.CapsuleGeometry(0.8, 1.5, 4, 8); // Increased size
     const otterMaterial = new THREE.MeshStandardMaterial({
       color: 0x8B4513,
       roughness: 0.7,
       metalness: 0.2
     }) as unknown as THREE.MeshBasicMaterial;
     const otter = new THREE.Mesh(otterGeometry, otterMaterial) as THREE.Mesh;
-    (otter as any).position.set(0, 0.25, 0);
+    (otter as any).position.set(0, 0.5, 0); // Raised position
     (otter as any).rotation.y = Math.PI;
     otter.castShadow = true;
     scene.add(otter);
     otterRef.current = otter;
   };
 
-  // Call resetGameState on component mount
-  useEffect(() => {
+  const startGame = () => {
+    if (gameStarted) return;
+    setGameStarted(true);
+    setGameOver(false);
+    lastObstacleTimeRef.current = Date.now();
+    lastFishTimeRef.current = Date.now();
+    
+    // Start level progression timer
+    timerIntervalRef.current = setInterval(() => {
+      setLevel(prev => prev + 1);
+      baseSpeedRef.current += 0.02;
+    }, 15000);
+  };
+
+  const restartGame = () => {
+    // Clear existing game elements
+    if (sceneRef.current) {
+      obstaclesRef.current.forEach(obstacle => sceneRef.current!.remove(obstacle));
+      fishRef.current.forEach(fish => sceneRef.current!.remove(fish));
+    }
+    
+    // Clear timer
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+    }
+    
+    // Reset game state
     resetGameState();
-  }, []);
+    setGameOver(false);
+    startGame();
+  };
+
+  const submitScore = () => {
+    const name = playerName.trim() || 'Anonymous';
+    const newScore = {
+      name,
+      score,
+      level,
+      time: Math.round(gameTime)
+    };
+    
+    const updatedLeaderboard = [...leaderboard, newScore]
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 10);
+    
+    setLeaderboard(updatedLeaderboard);
+    localStorage.setItem('otterRiverLeaderboard', JSON.stringify(updatedLeaderboard));
+    setPlayerName('');
+  };
+
+  const returnToMenu = () => {
+    setGameOver(false);
+    setGameStarted(false);
+    resetGameState();
+    if (otterRef.current) {
+      (otterRef.current as any).position.set(0, 0.25, 0);
+      (otterRef.current as any).rotation.y = Math.PI;
+    }
+    if (sceneRef.current) {
+      obstaclesRef.current.forEach(obstacle => sceneRef.current!.remove(obstacle));
+      fishRef.current.forEach(fish => sceneRef.current!.remove(fish));
+      obstaclesRef.current = [];
+      fishRef.current = [];
+    }
+    return false;
+  };
+
+  const createObstacle = () => {
+    if (!gameStarted || gameOver || !sceneRef.current) return;
+
+    const random = Math.random();
+    let cumulativeProbability = 0;
+    let selectedType = 'rock';
+
+    for (const [type, properties] of Object.entries(OBSTACLE_TYPES)) {
+      cumulativeProbability += properties.probability;
+      if (random <= cumulativeProbability) {
+        selectedType = type;
+        break;
+      }
+    }
+
+    const obstacleProperties = OBSTACLE_TYPES[selectedType];
+    const obstacle = new THREE.Mesh(
+      obstacleProperties.geometry,
+      new THREE.MeshStandardMaterial({
+        color: obstacleProperties.color,
+        roughness: 0.8,
+        metalness: 0.2
+      }) as unknown as THREE.MeshBasicMaterial
+    ) as THREE.Mesh;
+    
+    (obstacle as any).position.x = (Math.random() - 0.5) * 40;
+    (obstacle as any).position.y = 0.5;
+    (obstacle as any).position.z = -60;
+    
+    (obstacle as any).rotation.x = Math.random() * Math.PI;
+    (obstacle as any).rotation.y = Math.random() * Math.PI;
+    (obstacle as any).rotation.z = Math.random() * Math.PI;
+    
+    (obstacle as any).scale.set(
+      obstacleProperties.scale,
+      obstacleProperties.scale,
+      obstacleProperties.scale
+    );
+    
+    obstacle.castShadow = true;
+    obstacle.userData = { type: 'obstacle', obstacleType: selectedType };
+    sceneRef.current.add(obstacle);
+    obstaclesRef.current.push(obstacle);
+  };
+
+  const createFish = () => {
+    if (!gameStarted || gameOver || !sceneRef.current) return;
+
+    const random = Math.random();
+    let cumulativeProbability = 0;
+    let selectedType = 'normal';
+
+    for (const [type, properties] of Object.entries(FISH_TYPES)) {
+      cumulativeProbability += properties.probability;
+      if (random <= cumulativeProbability) {
+        selectedType = type;
+        break;
+      }
+    }
+
+    const fishProperties = FISH_TYPES[selectedType];
+    const fish = new THREE.Mesh(
+      fishProperties.geometry,
+      new THREE.MeshStandardMaterial({
+        color: fishProperties.color,
+        roughness: 0.3,
+        metalness: 0.8
+      }) as unknown as THREE.MeshBasicMaterial
+    ) as THREE.Mesh;
+
+    (fish as any).position.x = (Math.random() - 0.5) * 40;
+    (fish as any).position.y = 0.5;
+    (fish as any).position.z = -60;
+    (fish as any).rotation.y = Math.PI / 2;
+    (fish as any).scale.set(
+      fishProperties.scale,
+      fishProperties.scale,
+      fishProperties.scale
+    );
+    fish.castShadow = true;
+    fish.userData = { type: selectedType, points: fishProperties.points };
+    sceneRef.current.add(fish);
+    fishRef.current.push(fish);
+  };
 
   return (
     <div ref={containerRef} style={{
@@ -896,7 +955,14 @@ const Game: React.FC = () => {
       position: 'relative',
       overflow: 'hidden',
       backgroundColor: '#000',
-      touchAction: 'none'
+      touchAction: 'none',
+      WebkitTouchCallout: 'none',
+      WebkitUserSelect: 'none',
+      KhtmlUserSelect: 'none',
+      MozUserSelect: 'none',
+      msUserSelect: 'none',
+      userSelect: 'none',
+      WebkitTapHighlightColor: 'transparent'
     }} className="game-container">
       <StartScreen />
       <GameOverScreen />
