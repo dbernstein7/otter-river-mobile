@@ -98,74 +98,46 @@ const Game: React.FC = () => {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-      backdropFilter: 'blur(10px)',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
       zIndex: 1000,
-      animation: 'fadeIn 0.5s ease-out',
-      touchAction: 'none',
-      WebkitTouchCallout: 'none',
-      WebkitUserSelect: 'none',
-      userSelect: 'none',
-      WebkitTapHighlightColor: 'transparent',
-      overflow: 'hidden'
+      fontFamily: 'Arial, sans-serif'
     }}>
       <h1 style={{
-        fontSize: '2rem',
+        fontSize: '4rem',
         color: '#fff',
-        textShadow: '0 0 10px rgba(255, 255, 255, 0.5)',
+        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
         marginBottom: '2rem',
-        animation: 'glow 2s infinite alternate',
-        textAlign: 'center',
-        padding: '0 20px'
-      }}>Otter Adventure</h1>
+        fontWeight: 'bold'
+      }}>Otter River Adventure</h1>
       <button
-        id="startGame"
-        name="startGame"
         onClick={startGame}
-        onTouchStart={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          startGame();
-        }}
         style={{
           padding: '1rem 2rem',
           fontSize: '1.5rem',
           backgroundColor: '#4CAF50',
           color: 'white',
           border: 'none',
-          borderRadius: '50px',
+          borderRadius: '5px',
           cursor: 'pointer',
-          transition: 'all 0.3s ease',
-          boxShadow: '0 0 20px rgba(76, 175, 80, 0.3)',
-          animation: 'fadeIn 0.5s ease-out 0.3s both',
-          touchAction: 'manipulation',
-          WebkitTapHighlightColor: 'transparent',
-          minWidth: '200px',
-          minHeight: '60px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 20px',
-          position: 'relative',
-          zIndex: 1001
+          transition: 'background-color 0.3s',
+          fontWeight: 'bold',
+          textTransform: 'uppercase',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
         }}
-        className="start-button"
+        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#45a049'}
+        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4CAF50'}
       >
-        Start Adventure
+        Start Game
       </button>
       <div style={{
         marginTop: '2rem',
         color: '#fff',
         textAlign: 'center',
-        maxWidth: '600px',
-        animation: 'fadeIn 0.5s ease-out 0.6s both',
-        padding: '0 20px'
+        fontSize: '1.2rem',
+        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)'
       }}>
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>How to Play</h2>
-        <p style={{ marginBottom: '0.5rem' }}>Swipe to move the otter</p>
-        <p style={{ marginBottom: '0.5rem' }}>Collect fish to earn points</p>
-        <p style={{ marginBottom: '0.5rem' }}>Avoid obstacles to stay alive</p>
-        <p>Complete levels to progress!</p>
+        <p>Use arrow keys or WASD to move</p>
+        <p>Collect fish and avoid obstacles!</p>
       </div>
     </div>
   );
@@ -181,35 +153,31 @@ const Game: React.FC = () => {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.8)',
-      backdropFilter: 'blur(10px)',
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
       zIndex: 1000,
-      animation: 'fadeIn 0.5s ease-out'
+      fontFamily: 'Arial, sans-serif'
     }}>
       <h1 style={{
-        fontSize: '3rem',
+        fontSize: '4rem',
         color: '#fff',
+        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
         marginBottom: '1rem',
-        animation: 'glow 2s infinite alternate'
+        fontWeight: 'bold'
       }}>Game Over</h1>
       <p style={{
-        fontSize: '1.5rem',
+        fontSize: '2rem',
         color: '#fff',
         marginBottom: '2rem',
-        animation: 'fadeIn 0.5s ease-out 0.3s both'
+        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)'
       }}>
-        Final Score: {score}
+        Score: {score}
       </p>
       <div style={{
         display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
         gap: '1rem',
-        animation: 'fadeIn 0.5s ease-out 0.6s both'
+        marginBottom: '2rem'
       }}>
         <input
-          id="playerName"
-          name="playerName"
           type="text"
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
@@ -217,30 +185,26 @@ const Game: React.FC = () => {
           style={{
             padding: '0.5rem 1rem',
             fontSize: '1.2rem',
-            borderRadius: '25px',
-            border: '2px solid rgba(255, 0, 255, 0.5)',
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            color: '#fff',
-            width: '250px',
-            animation: 'borderPulse 2s infinite'
+            borderRadius: '5px',
+            border: '2px solid #4CAF50',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)'
           }}
         />
         <button
-          id="submitScore"
-          name="submitScore"
           onClick={submitScore}
           style={{
-            padding: '0.8rem 1.5rem',
+            padding: '0.5rem 1rem',
             fontSize: '1.2rem',
             backgroundColor: '#4CAF50',
             color: 'white',
             border: 'none',
-            borderRadius: '25px',
+            borderRadius: '5px',
             cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            boxShadow: '0 0 20px rgba(76, 175, 80, 0.3)'
+            transition: 'background-color 0.3s',
+            fontWeight: 'bold'
           }}
-          className="start-button"
+          onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#45a049'}
+          onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4CAF50'}
         >
           Submit Score
         </button>
@@ -248,20 +212,44 @@ const Game: React.FC = () => {
       <div style={{
         marginTop: '2rem',
         color: '#fff',
-        textAlign: 'center',
-        animation: 'fadeIn 0.5s ease-out 0.9s both'
+        textAlign: 'center'
       }}>
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Leaderboard</h2>
+        <h2 style={{
+          fontSize: '2rem',
+          marginBottom: '1rem',
+          textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)'
+        }}>Leaderboard</h2>
         {leaderboard.map((entry, index) => (
           <div key={index} style={{
-            marginBottom: '0.5rem',
             fontSize: '1.2rem',
-            color: index === 0 ? '#FFD700' : '#fff'
+            marginBottom: '0.5rem',
+            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)'
           }}>
             {entry.name}: {entry.score}
           </div>
         ))}
       </div>
+      <button
+        onClick={restartGame}
+        style={{
+          marginTop: '2rem',
+          padding: '1rem 2rem',
+          fontSize: '1.5rem',
+          backgroundColor: '#4CAF50',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          transition: 'background-color 0.3s',
+          fontWeight: 'bold',
+          textTransform: 'uppercase',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+        }}
+        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#45a049'}
+        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4CAF50'}
+      >
+        Play Again
+      </button>
     </div>
   );
 
@@ -271,10 +259,11 @@ const Game: React.FC = () => {
       top: '20px',
       left: '20px',
       color: '#fff',
-      fontSize: '1.2rem',
+      fontSize: '1.5rem',
       textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
       zIndex: 100,
-      animation: 'fadeIn 0.5s ease-out'
+      fontFamily: 'Arial, sans-serif',
+      fontWeight: 'bold'
     }}>
       <div style={{ marginBottom: '0.5rem' }}>Score: {score}</div>
       <div style={{ marginBottom: '0.5rem' }}>Lives: {lives}</div>
