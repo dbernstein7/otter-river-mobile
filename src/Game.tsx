@@ -707,35 +707,187 @@ const Game: React.FC = () => {
   const createRiver = () => {
     if (!sceneRef.current) return;
     const scene = sceneRef.current;
-    const riverGeometry = new THREE.PlaneGeometry(40, 200, 20, 20);
+
+    // Create main water platform
+    const waterGeometry = new THREE.PlaneGeometry(600, 600);
+    const waterMaterial = new THREE.MeshStandardMaterial({
+      color: 0x0077be,
+      roughness: 0.1,
+      metalness: 0.2,
+      transparent: true,
+      opacity: 1
+    }) as unknown as THREE.MeshBasicMaterial;
+    const water = new THREE.Mesh(waterGeometry, waterMaterial) as THREE.Mesh;
+    (water as any).rotation.x = -Math.PI / 2;
+    (water as any).position.y = -0.5;
+    (water as any).position.z = -300;
+    water.receiveShadow = true;
+    scene.add(water);
+
+    // Add bottom cover
+    const bottomCoverGeometry = new THREE.BoxGeometry(600, 2, 600);
+    const bottomCoverMaterial = new THREE.MeshStandardMaterial({
+      color: 0x0077be,
+      roughness: 0.1,
+      metalness: 0.2
+    }) as unknown as THREE.MeshBasicMaterial;
+    const bottomCover = new THREE.Mesh(bottomCoverGeometry, bottomCoverMaterial) as THREE.Mesh;
+    (bottomCover as any).position.set(0, -2, -300);
+    bottomCover.receiveShadow = true;
+    scene.add(bottomCover);
+
+    // Main river
+    const riverGeometry = new THREE.PlaneGeometry(40, 600, 40, 100);
     const riverMaterial = new THREE.MeshStandardMaterial({
-      color: 0x4682B4,
-      roughness: 0.2,
-      metalness: 0.8,
+      color: 0x0077be,
+      roughness: 1.0,
+      metalness: 0.0,
       transparent: true,
       opacity: 0.9
     }) as unknown as THREE.MeshBasicMaterial;
     const river = new THREE.Mesh(riverGeometry, riverMaterial) as THREE.Mesh;
     (river as any).rotation.x = -Math.PI / 2;
-    (river as any).position.z = -100;
+    (river as any).position.z = -300;
+    (river as any).position.y = 0.5;
     river.receiveShadow = true;
     scene.add(river);
     riverRef.current = river;
+
+    // Add stream on the right side
+    const streamGeometry = new THREE.PlaneGeometry(15, 600, 20, 100);
+    const streamMaterial = new THREE.MeshStandardMaterial({
+      color: 0x00BFFF,
+      roughness: 1.0,
+      metalness: 0.0,
+      transparent: true,
+      opacity: 0.9
+    }) as unknown as THREE.MeshBasicMaterial;
+    const stream = new THREE.Mesh(streamGeometry, streamMaterial) as THREE.Mesh;
+    (stream as any).rotation.x = -Math.PI / 2;
+    (stream as any).position.z = -300;
+    (stream as any).position.y = 0.55;
+    (stream as any).position.x = 50;
+    stream.receiveShadow = true;
+    scene.add(stream);
+
+    // Add stream on the left side
+    const stream2 = stream.clone();
+    (stream2 as any).position.x = -50;
+    scene.add(stream2);
   };
 
   const createOtter = () => {
     if (!sceneRef.current) return;
     const scene = sceneRef.current;
-    const otterGeometry = new THREE.CapsuleGeometry(0.25, 0.5, 4, 8);
-    const otterMaterial = new THREE.MeshStandardMaterial({
+    const otter = new THREE.Group();
+
+    // Body
+    const bodyGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+    const bodyMaterial = new THREE.MeshStandardMaterial({
       color: 0x8B4513,
       roughness: 0.7,
-      metalness: 0.2
+      metalness: 0.1
     }) as unknown as THREE.MeshBasicMaterial;
-    const otter = new THREE.Mesh(otterGeometry, otterMaterial) as THREE.Mesh;
+    const body = new THREE.Mesh(bodyGeometry, bodyMaterial) as THREE.Mesh;
+    (body as any).scale.set(1, 0.8, 1.2);
+    body.castShadow = true;
+    otter.add(body);
+
+    // Head
+    const headGeometry = new THREE.SphereGeometry(0.45, 16, 16);
+    const headMaterial = new THREE.MeshStandardMaterial({
+      color: 0x8B4513,
+      roughness: 0.7,
+      metalness: 0.1
+    }) as unknown as THREE.MeshBasicMaterial;
+    const head = new THREE.Mesh(headGeometry, headMaterial) as THREE.Mesh;
+    (head as any).position.set(0, 0.3, 0.8);
+    head.castShadow = true;
+    otter.add(head);
+
+    // Snout
+    const snoutGeometry = new THREE.SphereGeometry(0.25, 16, 16);
+    const snoutMaterial = new THREE.MeshStandardMaterial({
+      color: 0x8B4513,
+      roughness: 0.7,
+      metalness: 0.1
+    }) as unknown as THREE.MeshBasicMaterial;
+    const snout = new THREE.Mesh(snoutGeometry, snoutMaterial) as THREE.Mesh;
+    (snout as any).position.set(0, 0.2, 1.2);
+    (snout as any).scale.set(1, 0.8, 0.6);
+    snout.castShadow = true;
+    otter.add(snout);
+
+    // Nose
+    const noseGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+    const noseMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 }) as unknown as THREE.MeshBasicMaterial;
+    const nose = new THREE.Mesh(noseGeometry, noseMaterial) as THREE.Mesh;
+    (nose as any).position.set(0, 0.2, 1.35);
+    otter.add(nose);
+
+    // Eyes
+    const eyeGeometry = new THREE.SphereGeometry(0.12, 8, 8);
+    const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 }) as unknown as THREE.MeshBasicMaterial;
+    const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial) as THREE.Mesh;
+    const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial) as THREE.Mesh;
+    (leftEye as any).position.set(0.25, 0.4, 1.1);
+    (rightEye as any).position.set(-0.25, 0.4, 1.1);
+    otter.add(leftEye);
+    otter.add(rightEye);
+
+    // Ears
+    const earGeometry = new THREE.SphereGeometry(0.15, 8, 8);
+    const earMaterial = new THREE.MeshStandardMaterial({
+      color: 0x8B4513,
+      roughness: 0.7,
+      metalness: 0.1
+    }) as unknown as THREE.MeshBasicMaterial;
+    const leftEar = new THREE.Mesh(earGeometry, earMaterial) as THREE.Mesh;
+    const rightEar = new THREE.Mesh(earGeometry, earMaterial) as THREE.Mesh;
+    (leftEar as any).position.set(0.3, 0.6, 0.9);
+    (rightEar as any).position.set(-0.3, 0.6, 0.9);
+    otter.add(leftEar);
+    otter.add(rightEar);
+
+    // Tail
+    const tailGeometry = new THREE.SphereGeometry(0.4, 16, 16);
+    const tailMaterial = new THREE.MeshStandardMaterial({
+      color: 0x8B4513,
+      roughness: 0.7,
+      metalness: 0.1
+    }) as unknown as THREE.MeshBasicMaterial;
+    const tail = new THREE.Mesh(tailGeometry, tailMaterial) as THREE.Mesh;
+    (tail as any).position.set(0, 0.2, -1);
+    (tail as any).scale.set(1.5, 0.2, 0.8);
+    (tail as any).rotation.y = Math.PI / 2;
+    tail.castShadow = true;
+    otter.add(tail);
+
+    // Legs
+    const legGeometry = new THREE.SphereGeometry(0.2, 8, 8);
+    const legMaterial = new THREE.MeshStandardMaterial({
+      color: 0x8B4513,
+      roughness: 0.7,
+      metalness: 0.1
+    }) as unknown as THREE.MeshBasicMaterial;
+
+    const positions = [
+      [0.4, -0.2, 0.5],   // Front right
+      [-0.4, -0.2, 0.5],  // Front left
+      [0.4, -0.2, -0.5],  // Back right
+      [-0.4, -0.2, -0.5]  // Back left
+    ];
+
+    positions.forEach(pos => {
+      const leg = new THREE.Mesh(legGeometry, legMaterial) as THREE.Mesh;
+      (leg as any).position.set(...pos);
+      leg.castShadow = true;
+      otter.add(leg);
+    });
+
+    // Set initial position
     (otter as any).position.set(0, 0.25, 0);
     (otter as any).rotation.y = Math.PI;
-    otter.castShadow = true;
     scene.add(otter);
     otterRef.current = otter;
   };
