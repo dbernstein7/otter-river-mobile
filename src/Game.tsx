@@ -949,7 +949,8 @@ const Game: React.FC = () => {
       MozUserSelect: 'none',
       msUserSelect: 'none',
       userSelect: 'none',
-      WebkitTapHighlightColor: 'transparent'
+      WebkitTapHighlightColor: 'transparent',
+      WebkitOverflowScrolling: 'touch'
     }} className="game-container">
       <StartScreen />
       <GameOverScreen />
