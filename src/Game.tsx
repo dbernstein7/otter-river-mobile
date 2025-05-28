@@ -628,6 +628,7 @@ const Game: React.FC = () => {
   const createEnvironment = () => {
     if (!sceneRef.current) return;
     const scene = sceneRef.current;
+
     // Create sun
     const sunGeometry = new THREE.SphereGeometry(5, 32, 32);
     const sunMaterial = new THREE.MeshBasicMaterial({
