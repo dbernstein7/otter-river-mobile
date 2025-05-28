@@ -72,6 +72,7 @@ const Game: React.FC = () => {
   const baseSpeedRef = useRef(0.2);
   const obstacleSpawnIntervalRef = useRef(300);
   const currentObstacleIntervalRef = useRef(300);
+  const animationFrameRef = useRef<number | null>(null);
 
   // Movement controls
   const keysRef = useRef({
@@ -299,70 +300,6 @@ const Game: React.FC = () => {
       setLevel(prev => prev + 1);
       baseSpeedRef.current += 0.02;
     }, 15000);
-
-    // Start animation loop if not already running
-    if (!sceneRef.current || !cameraRef.current || !rendererRef.current) {
-      const init = async () => {
-        try {
-          // Create game container
-          const gameContainer = document.createElement('div');
-          gameContainer.id = 'game-container';
-          gameContainer.style.width = '100%';
-          gameContainer.style.height = '100%';
-          containerRef.current!.appendChild(gameContainer);
-
-          // Initialize Three.js scene
-          const scene = new THREE.Scene();
-          scene.background = new THREE.Color(0x87CEEB);
-          scene.fog = new THREE.Fog(0x87CEEB, 20, 100);
-          sceneRef.current = scene;
-
-          const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-          (camera as any).position.set(0, 15, 20);
-          (camera as any).lookAt(0, 0, -100);
-          cameraRef.current = camera;
-          scene.add(camera);
-
-          const renderer = new THREE.WebGLRenderer({ antialias: true });
-          renderer.setSize(window.innerWidth, window.innerHeight);
-          (renderer as any).shadowMap.enabled = true;
-          (renderer as any).shadowMap.type = THREE.PCFSoftShadowMap;
-          rendererRef.current = renderer;
-          gameContainer.appendChild(renderer.domElement);
-
-          // Add lights
-          const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-          scene.add(ambientLight);
-          const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-          (directionalLight as any).position.set(5, 5, 5);
-          directionalLight.castShadow = true;
-          directionalLight.shadow.mapSize.width = 2048;
-          directionalLight.shadow.mapSize.height = 2048;
-          scene.add(directionalLight);
-
-          // Create environment
-          createEnvironment();
-
-          // Create river
-          createRiver();
-
-          // Create otter
-          createOtter();
-
-          // Add event listeners
-          window.addEventListener('resize', onWindowResize);
-          window.addEventListener('keydown', onKeyDown);
-          window.addEventListener('keyup', onKeyUp);
-
-          // Start animation loop
-          animate();
-        } catch (error) {
-          console.error('Error initializing game:', error);
-        }
-      };
-
-      init();
-    }
   };
 
   const restartGame = () => {
@@ -402,71 +339,61 @@ const Game: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!containerRef.current || gameStarted) return;
+    if (!containerRef.current) return;
 
-    const init = async () => {
-      try {
-        // Create game container
-        const gameContainer = document.createElement('div');
-        gameContainer.id = 'game-container';
-        gameContainer.style.width = '100%';
-        gameContainer.style.height = '100%';
-        containerRef.current!.appendChild(gameContainer);
+    // Initialize Three.js scene
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x87CEEB);
+    scene.fog = new THREE.Fog(0x87CEEB, 20, 100);
+    sceneRef.current = scene;
 
-        // Initialize Three.js scene
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x87CEEB);
-        scene.fog = new THREE.Fog(0x87CEEB, 20, 100);
-        sceneRef.current = scene;
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    (camera as any).position.set(0, 15, 20);
+    (camera as any).lookAt(0, 0, -100);
+    cameraRef.current = camera;
+    scene.add(camera);
 
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        (camera as any).position.set(0, 15, 20);
-        (camera as any).lookAt(0, 0, -100);
-        cameraRef.current = camera;
-        scene.add(camera);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    (renderer as any).shadowMap.enabled = true;
+    (renderer as any).shadowMap.type = THREE.PCFSoftShadowMap;
+    rendererRef.current = renderer;
+    containerRef.current.appendChild(renderer.domElement);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        (renderer as any).shadowMap.enabled = true;
-        (renderer as any).shadowMap.type = THREE.PCFSoftShadowMap;
-        rendererRef.current = renderer;
-        gameContainer.appendChild(renderer.domElement);
+    // Add lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    (directionalLight as any).position.set(5, 5, 5);
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 2048;
+    directionalLight.shadow.mapSize.height = 2048;
+    scene.add(directionalLight);
 
-        // Add lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(ambientLight);
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        (directionalLight as any).position.set(5, 5, 5);
-        directionalLight.castShadow = true;
-        directionalLight.shadow.mapSize.width = 2048;
-        directionalLight.shadow.mapSize.height = 2048;
-        scene.add(directionalLight);
+    // Create environment
+    createEnvironment();
 
-        // Create environment
-        createEnvironment();
+    // Create river
+    createRiver();
 
-        // Create river
-        createRiver();
+    // Create otter
+    createOtter();
 
-        // Create otter
-        createOtter();
+    // Add event listeners
+    window.addEventListener('resize', onWindowResize);
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
 
-        // Add event listeners
-        window.addEventListener('resize', onWindowResize);
-        window.addEventListener('keydown', onKeyDown);
-        window.addEventListener('keyup', onKeyUp);
-
-        // Reset game state
-        resetGameState();
-
-        // Start animation loop
-        animate();
-      } catch (error) {
-        console.error('Error initializing game:', error);
+    // Start animation loop
+    const animate = () => {
+      if (!sceneRef.current || !cameraRef.current || !rendererRef.current) return;
+      animationFrameRef.current = requestAnimationFrame(animate);
+      if (gameStarted && !gameOver) {
+        update();
       }
+      rendererRef.current.render(sceneRef.current, cameraRef.current);
     };
-
-    init();
+    animate();
 
     // Cleanup function
     return () => {
@@ -476,17 +403,17 @@ const Game: React.FC = () => {
       if (timerIntervalRef.current) {
         clearInterval(timerIntervalRef.current);
       }
-      if (containerRef.current) {
-        const gameContainer = containerRef.current.querySelector('#game-container');
-        if (gameContainer) {
-          containerRef.current.removeChild(gameContainer);
-        }
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
       if (rendererRef.current) {
         rendererRef.current.dispose();
+        if (containerRef.current && rendererRef.current.domElement) {
+          containerRef.current.removeChild(rendererRef.current.domElement);
+        }
       }
     };
-  }, [gameStarted]);
+  }, []);
 
   const update = () => {
     if (!gameStarted || gameOver) return;
@@ -693,13 +620,6 @@ const Game: React.FC = () => {
     gameTimeRef.current = 0;
     baseSpeedRef.current = 0.2;
     currentObstacleIntervalRef.current = obstacleSpawnIntervalRef.current;
-  };
-
-  const animate = () => {
-    if (!sceneRef.current || !cameraRef.current || !rendererRef.current) return;
-    requestAnimationFrame(animate);
-    update();
-    rendererRef.current.render(sceneRef.current, cameraRef.current);
   };
 
   const createEnvironment = () => {
